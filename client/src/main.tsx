@@ -6,6 +6,7 @@ import App from "./App";
 import Home from "./pages/Home";
 import AdminLogin from "./pages/LoginAdmin";
 import AdminEdit from "./pages/EditAdmin";
+import AddProject from "./pages/AddProject";
 
 const router = createBrowserRouter([
 	{
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
 			{
 				path: "admin/edit",
 				element: <AdminEdit />,
+			},
+			{
+				path: "admin/add",
+				element: <AddProject />,
 			},
 			{
 				index: true, // Redirige "/" vers "/home" par défaut
