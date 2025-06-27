@@ -50,35 +50,59 @@ export default function Player({ onEnterBuilding }: { onEnterBuilding?: () => vo
     }
   }, [keys, actions, animations]);
 
-  // Déplacements + détection d’entrée
-  useFrame(() => {
-    if (!group.current) return;
-    
+ // Limites de la scène
+const boundaries = {
+  minX: -1.4,
+  maxX: 1.4,
+  minZ: -0.59,
+  maxZ: 1.6,
+};
 
-    const speed = 0.003;
-    if (keys["ArrowLeft"]) group.current.rotation.y += 0.03;
-    if (keys["ArrowRight"]) group.current.rotation.y -= 0.03;
-    if (keys["ArrowUp"]) group.current.translateZ(speed);
-    if (keys["ArrowDown"]) group.current.translateZ(-speed);
 
-    const pos = group.current.position;
+useFrame(() => {
+  if (!group.current) return;
 
-    // Debug : afficher la position
-    console.log(`x: ${pos.x.toFixed(2)} z: ${pos.z.toFixed(2)}`);
+  const speed = 0.003;
+  const rotationSpeed = 0.03;
 
-    // Zone d’entrée dans le bâtiment
-    const inZone = pos.x > -1 && pos.x < 1 && pos.z > -3 && pos.z < -1;
+  const pos = group.current.position.clone(); // ← clone pour rollback
 
-    if (inZone && !hasEntered) {
-      setHasEntered(true);
-      console.log("✅ Entrée détectée dans la zone du bâtiment !");
-      if (onEnterBuilding) onEnterBuilding();
-    }
-  });
+  // Rotation
+  if (keys["ArrowLeft"]) group.current.rotation.y += rotationSpeed;
+  if (keys["ArrowRight"]) group.current.rotation.y -= rotationSpeed;
+
+  // Déplacement
+  if (keys["ArrowUp"]) group.current.translateZ(speed);
+  if (keys["ArrowDown"]) group.current.translateZ(-speed);
+
+  const newPos = group.current.position;
+  console.log(`🧍 x: ${newPos.x.toFixed(2)} | z: ${newPos.z.toFixed(2)}`);
+
+  // 🧱 Limites de la scène
+  if (
+    newPos.x < boundaries.minX || newPos.x > boundaries.maxX ||
+    newPos.z < boundaries.minZ || newPos.z > boundaries.maxZ
+  ) {
+    group.current.position.copy(pos); // rollback si en dehors
+    console.log("🔴 Hors limite, retour position précédente");
+  }
+
+  // ✅ Zone d’entrée bâtiment
+  const inZone = newPos.x > -1 && newPos.x < 1 && newPos.z > -3 && newPos.z < -1;
+  if (inZone && !hasEntered) {
+    setHasEntered(true);
+    console.log("✅ Entrée bâtiment !");
+    if (onEnterBuilding) onEnterBuilding();
+  }
+});
+
 
   return (
+      
     <group ref={group} position={[0.9, 0.09, 0.9]}>
       <primitive object={scene} scale={SCALE} />
+
     </group>
+    
   );
 }
