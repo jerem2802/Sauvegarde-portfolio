@@ -1,26 +1,20 @@
 import { MarchingCubes } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
-import { Group } from "three";
-
-// Type personnalisé pour les méthodes spécifiques à MarchingCubes
-interface MarchingCubesImpl extends Group {
-  reset: () => void;
-  addBall: (x: number, y: number, z: number, strength: number, subtract: number) => void;
-}
+import { MarchingCubes as MarchingCubesImpl } from "three-stdlib"; // 👈 Type natif avec les méthodes reset & addBall
 
 type LavaBlobsProps = {
   count?: number;
 };
 
 export default function LavaBlobs({ count = 50 }: LavaBlobsProps) {
-  const ref = useRef<MarchingCubesImpl>(null);
+  // 👌 Ref bien typé, sans cast
+  const ref = useRef<MarchingCubesImpl | null>(null);
 
   useFrame(({ clock }) => {
-    const t = clock.getElapsedTime();
-
     if (!ref.current) return;
 
+    const t = clock.getElapsedTime();
     ref.current.reset();
 
     for (let i = 0; i < count; i++) {
