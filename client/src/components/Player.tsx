@@ -66,61 +66,35 @@ useFrame(() => {
 
   const speed = 0.003;
   const rotationSpeed = 0.03;
-  const pos = group.current.position.clone(); // ← clone pour rollback
+  const pos = group.current.position.clone();
 
-  // Rotation
   if (keys["ArrowLeft"]) group.current.rotation.y += rotationSpeed;
   if (keys["ArrowRight"]) group.current.rotation.y -= rotationSpeed;
-
-  // Déplacement
   if (keys["ArrowUp"]) group.current.translateZ(speed);
   if (keys["ArrowDown"]) group.current.translateZ(-speed);
 
   const newPos = group.current.position;
-  console.log(`🧍 x: ${newPos.x.toFixed(2)} | z: ${newPos.z.toFixed(2)}`);
 
-  // 🧱 Limites de la scène
+  // 🔁 Collision avec limites globales
   if (
     newPos.x < boundaries.minX || newPos.x > boundaries.maxX ||
     newPos.z < boundaries.minZ || newPos.z > boundaries.maxZ
   ) {
-    group.current.position.copy(pos); // rollback si en dehors
-    console.log("Hors limite, retour position précédente");
+    group.current.position.copy(pos);
   }
 
- // 🔲 Collision bâtiment gauche (sauf porte)
-const buildingBounds = {
-  minX: -1.06,
-  maxX: -0.80,
-  minZ: -0.12,
-  maxZ: 0.07,
-};
+  // ✅ Zone du pas de la porte
+  const inDoorZone =
+    newPos.x > -0.95 && newPos.x < -0.89 &&
+    newPos.z > 0.07 && newPos.z < 0.13;
 
-const isInBuildingZone =
-  newPos.x > buildingBounds.minX &&
-  newPos.x < buildingBounds.maxX &&
-  newPos.z > buildingBounds.minZ &&
-  newPos.z < buildingBounds.maxZ;
-
-// 🟢 Zone porte (on laisse passer)
-const isInDoorZone = newPos.z > 0.04 && newPos.z < 0.08 && newPos.x > -0.95 && newPos.x < -0.88;
-
-if (isInBuildingZone && !isInDoorZone) {
-  group.current.position.copy(pos); // rollback
-  console.log("🚧 Collision bâtiment (sauf porte)");
-}
-
-// ✅ Passage par la porte = déclenche transition
-if (isInDoorZone && !hasEntered) {
-  setHasEntered(true);
-  console.log("🚪 Entrée par la porte !");
-  if (onEnterBuilding) onEnterBuilding();
-}
-
+  if (inDoorZone && !hasEntered) {
+    setHasEntered(true);
+    console.log("🚪 Entrée détectée dans la porte !");
+    if (onEnterBuilding) onEnterBuilding(); // callback pour changer de page
+  }
 });
-if (group.current) {
-  console.log(`Joueur -> x: ${group.current.position.x.toFixed(2)}, z: ${group.current.position.z.toFixed(2)}`);
-}
+
 
 
 
