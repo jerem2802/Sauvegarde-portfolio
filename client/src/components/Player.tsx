@@ -4,11 +4,14 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 import * as THREE from "three";
 
 type PlayerProps = {
-  onEnterBuilding?: () => void;
+  onEnterBuilding?: (building: "about" | "projects") => void;
   startPosition?: [number, number, number];
 };
 
-export default function Player({ onEnterBuilding, startPosition = [-0.27790872879685274, 0.1, 1.4401438935146833] }: PlayerProps) {
+export default function Player({
+  onEnterBuilding,
+  startPosition = [-0.27790872879685274, 0.1, 1.4401438935146833],
+}: PlayerProps) {
   const group = useRef<THREE.Group>(null);
   const { scene, animations } = useGLTF("/player.glb");
   const { actions } = useAnimations(animations, group);
@@ -16,16 +19,13 @@ export default function Player({ onEnterBuilding, startPosition = [-0.2779087287
   const [hasEntered, setHasEntered] = useState(false);
   const SCALE = 0.001;
 
-  // ✅ Initialisation position et échelle
   useEffect(() => {
-    if (!group.current) return;
-
-    // On fixe la position et le scale sans calcul imprévisible
-    group.current.position.set(...startPosition);
-    group.current.scale.setScalar(SCALE);
+    if (group.current) {
+      group.current.position.set(...startPosition);
+      group.current.scale.setScalar(SCALE);
+    }
   }, [scene, startPosition]);
 
-  // 🎮 Clavier
   useEffect(() => {
     const down = (e: KeyboardEvent) => setKeys((k) => ({ ...k, [e.key]: true }));
     const up = (e: KeyboardEvent) => setKeys((k) => ({ ...k, [e.key]: false }));
@@ -37,7 +37,6 @@ export default function Player({ onEnterBuilding, startPosition = [-0.2779087287
     };
   }, []);
 
-  // ▶️ Animation
   useEffect(() => {
     if (actions && animations.length > 0) {
       const walk = animations[0].name;
@@ -46,7 +45,6 @@ export default function Player({ onEnterBuilding, startPosition = [-0.2779087287
     }
   }, [keys, actions, animations]);
 
-  // 📦 Limites
   const boundaries = {
     minX: -1.4,
     maxX: 1.4,
@@ -54,11 +52,8 @@ export default function Player({ onEnterBuilding, startPosition = [-0.2779087287
     maxZ: 1.6,
   };
 
-  // 🕹️ Mouvement
   useFrame(() => {
     if (!group.current) return;
-    console.log("📍 Position actuelle :", group.current.position.clone());
-
 
     const speed = 0.003;
     const rotationSpeed = 0.03;
@@ -70,8 +65,9 @@ export default function Player({ onEnterBuilding, startPosition = [-0.2779087287
     if (keys["ArrowDown"]) group.current.translateZ(-speed);
 
     const newPos = group.current.position;
+    console.log("📍 Position actuelle :", newPos);
 
-    // 💥 Collision
+    // Collision
     if (
       newPos.x < boundaries.minX || newPos.x > boundaries.maxX ||
       newPos.z < boundaries.minZ || newPos.z > boundaries.maxZ
@@ -79,18 +75,28 @@ export default function Player({ onEnterBuilding, startPosition = [-0.2779087287
       group.current.position.copy(pos);
     }
 
-    // 🚪 Entrée dans la porte
-    const inDoorZone =
+    // Entrée bâtiment À propos
+    const inAboutZone =
       newPos.x > -0.95 && newPos.x < -0.89 &&
       newPos.z > 0.07 && newPos.z < 0.13;
 
-    if (inDoorZone && !hasEntered) {
+    if (inAboutZone && !hasEntered) {
       setHasEntered(true);
-      console.log("🚪 Entrée détectée dans la porte !");
-      if (onEnterBuilding) onEnterBuilding();
+      console.log("🚪 Entrée détectée dans le bâtiment À propos !");
+      onEnterBuilding?.("about");
+    }
+
+    // Entrée bâtiment Projets
+    const inProjectsZone =
+      newPos.x > -0.01 && newPos.x < 0.07 &&
+      newPos.z > 0.25 && newPos.z < 0.3;
+
+    if (inProjectsZone && !hasEntered) {
+      setHasEntered(true);
+      console.log("🚪 Entrée détectée dans le bâtiment Projets !");
+      onEnterBuilding?.("projects");
     }
   });
-  
 
   return (
     <group ref={group}>

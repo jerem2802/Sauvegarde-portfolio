@@ -32,10 +32,11 @@ export default function CircularInfoCarousel() {
 
   // 🧲 Attach zoom group to camera
   useEffect(() => {
-    camera.add(zoomGroupRef.current);
+    const zoomGroup = zoomGroupRef.current;
+    camera.add(zoomGroup);
     scene.add(camera); // ensure camera stays in scene
     return () => {
-      camera.remove(zoomGroupRef.current);
+      camera.remove(zoomGroup);
     };
   }, [camera, scene]);
 

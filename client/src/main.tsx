@@ -8,6 +8,7 @@ import AdminLogin from "./pages/LoginAdmin";
 import AdminEdit from "./pages/EditAdmin";
 import AddProject from "./pages/AddProject";
 import APropos from "./pages/APropos";
+import Projets from "./pages/Projets";
 
 const router = createBrowserRouter([
 	{
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
 			{
 				path: "a-propos",
 				element: <APropos />,
+			},
+			{
+				path: "projets",
+				element: <Projets />,
 			},
 			{
 				path: "admin",

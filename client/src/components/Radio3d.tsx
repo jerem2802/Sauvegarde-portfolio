@@ -5,7 +5,6 @@ import Player from "./Player";
 import AnimatedFloatingText from "./AnimatedFloatingText";
 import { useNavigate } from "react-router-dom";
 import * as THREE from "three";
-import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
 const RadioModel = () => {
   const { scene } = useGLTF("/city.glb");
@@ -25,6 +24,7 @@ const RadioModel = () => {
 
   return <primitive object={scene} scale={0.8} />;
 };
+
 
 const InteriorRoom = () => {
   return (
@@ -52,8 +52,8 @@ export default function Radio3D() {
   const navigate = useNavigate();
   const groupRef = useRef<THREE.Group>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const orbitRefExterior = useRef<OrbitControlsImpl>(null);
-  const orbitRefInterior = useRef<OrbitControlsImpl>(null);
+  const orbitRefExterior = useRef<any>(null);
+  const orbitRefInterior = useRef<any>(null);
 
   useEffect(() => {
     if (!inInterior && orbitRefExterior.current) {
@@ -66,30 +66,30 @@ export default function Radio3D() {
     }
   }, [inInterior]);
 
-  const handleTransition = () => {
-    if (!groupRef.current || !overlayRef.current) return;
+  const handleTransitionTo = (targetPath: string) => {
+  if (!groupRef.current || !overlayRef.current) return;
 
-    overlayRef.current.style.transition = "opacity 1s ease-in-out";
-    overlayRef.current.style.opacity = "1";
+  overlayRef.current.style.transition = "opacity 1s ease-in-out";
+  overlayRef.current.style.opacity = "1";
 
-    let t = 1;
-    const interval = setInterval(() => {
-      t -= 0.05;
-      if (groupRef.current) {
-        groupRef.current.scale.set(t, t, t);
-      }
-
-      if (t <= 0.01) {
-        clearInterval(interval);
-        setTimeout(() => {
-          navigate("/a-propos");
-        }, 1000);
-      }
-    }, 16);
-  };
-
+  let t = 1;
+  const interval = setInterval(() => {
+    t -= 0.05;
+    if (groupRef.current) {
+      groupRef.current.scale.set(t, t, t);
+    }
+    if (t <= 0.01) {
+      clearInterval(interval);
+      setTimeout(() => {
+        navigate(targetPath);       // ← ça va déclencher le changement de page
+        setInInterior(true);        // ✅ on le met APRES le navigate
+      }, 1000);
+    }
+  }, 16);
+};
+ 
   return (
-    <div className="relative w-full h-screen bg-black">
+    <div className="relative w-full h-screen bg-black cur">
       <Canvas camera={{ position: [0, 0.6, 2], fov: 100 }} className="bg-black">
         <ambientLight intensity={0.8} />
         <directionalLight position={[5, 10, 5]} intensity={1} />
@@ -115,15 +115,13 @@ export default function Radio3D() {
             )}
 
             <Player
-              key={inInterior ? "inside" : "outside"}
-              startPosition={inInterior ? [0, 0.1, 0] : [-0.2779, 0.1, 1.4401]}
-              onEnterBuilding={() => {
-                if (!inInterior) {
-                  setInInterior(true);
-                  handleTransition();
-                }
-              }}
-            />
+  key={inInterior ? "inside" : "outside"}
+  startPosition={inInterior ? [0, 0.1, 0] : [-0.27790872879685274, 0.1, 1.4401438935146833]}
+  onEnterBuilding={(building) => {
+    handleTransitionTo(building === "about" ? "/a-propos" : "/projets");
+  }}
+/>
+
 
             {inInterior ? (
               <>
