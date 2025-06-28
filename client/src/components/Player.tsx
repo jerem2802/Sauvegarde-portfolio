@@ -16,10 +16,11 @@ export default function Player({ onEnterBuilding }: { onEnterBuilding?: () => vo
     if (!group.current) return;
 
     let lowestY = Infinity;
-    scene.traverse((child: any) => {
-      if (child.isMesh) {
-        child.geometry.computeBoundingBox();
-        const box = child.geometry.boundingBox;
+    scene.traverse((child: THREE.Object3D) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        mesh.geometry.computeBoundingBox();
+        const box = mesh.geometry.boundingBox;
         if (box && box.min.y < lowestY) {
           lowestY = box.min.y;
         }
@@ -41,7 +42,8 @@ export default function Player({ onEnterBuilding }: { onEnterBuilding?: () => vo
     };
   }, []);
 
-  // Lancement de l’animation
+ 
+   // Lancement de l’animation
   useEffect(() => {
     if (actions && animations.length > 0) {
       const walk = animations[0].name;
@@ -64,7 +66,6 @@ useFrame(() => {
 
   const speed = 0.003;
   const rotationSpeed = 0.03;
-
   const pos = group.current.position.clone(); // ← clone pour rollback
 
   // Rotation
@@ -84,22 +85,48 @@ useFrame(() => {
     newPos.z < boundaries.minZ || newPos.z > boundaries.maxZ
   ) {
     group.current.position.copy(pos); // rollback si en dehors
-    console.log("🔴 Hors limite, retour position précédente");
+    console.log("Hors limite, retour position précédente");
   }
 
-  // ✅ Zone d’entrée bâtiment
-  const inZone = newPos.x > -1 && newPos.x < 1 && newPos.z > -3 && newPos.z < -1;
-  if (inZone && !hasEntered) {
-    setHasEntered(true);
-    console.log("✅ Entrée bâtiment !");
-    if (onEnterBuilding) onEnterBuilding();
-  }
+ // 🔲 Collision bâtiment gauche (sauf porte)
+const buildingBounds = {
+  minX: -1.06,
+  maxX: -0.80,
+  minZ: -0.12,
+  maxZ: 0.07,
+};
+
+const isInBuildingZone =
+  newPos.x > buildingBounds.minX &&
+  newPos.x < buildingBounds.maxX &&
+  newPos.z > buildingBounds.minZ &&
+  newPos.z < buildingBounds.maxZ;
+
+// 🟢 Zone porte (on laisse passer)
+const isInDoorZone = newPos.z > 0.04 && newPos.z < 0.08 && newPos.x > -0.95 && newPos.x < -0.88;
+
+if (isInBuildingZone && !isInDoorZone) {
+  group.current.position.copy(pos); // rollback
+  console.log("🚧 Collision bâtiment (sauf porte)");
+}
+
+// ✅ Passage par la porte = déclenche transition
+if (isInDoorZone && !hasEntered) {
+  setHasEntered(true);
+  console.log("🚪 Entrée par la porte !");
+  if (onEnterBuilding) onEnterBuilding();
+}
+
 });
+if (group.current) {
+  console.log(`Joueur -> x: ${group.current.position.x.toFixed(2)}, z: ${group.current.position.z.toFixed(2)}`);
+}
+
 
 
   return (
       
-    <group ref={group} position={[0.9, 0.09, 0.9]}>
+    <group ref={group} position={[0.9, 0.10, 0.9]}>
       <primitive object={scene} scale={SCALE} />
 
     </group>
