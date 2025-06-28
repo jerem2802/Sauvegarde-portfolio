@@ -19,7 +19,7 @@ export default function SpaceNebula({ count = 1000 }: ParticleProps) {
 
   const time = useRef(0);
 
-  useFrame((state) => {
+  useFrame(() => {
     time.current += 0.01;
     if (mesh.current) {
       mesh.current.rotation.y = time.current * 0.1;

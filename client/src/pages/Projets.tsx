@@ -1,7 +1,6 @@
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useRef, } from "react";
+import { Suspense, useRef } from "react";
 import { OrbitControls, Stars } from "@react-three/drei";
-
 import * as THREE from "three";
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +9,6 @@ export default function Projets() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  // 👉 Optionnel : retour au menu
   const handleBack = () => {
     if (!groupRef.current || !overlayRef.current) return;
 
@@ -26,7 +24,7 @@ export default function Projets() {
       if (t <= 0.01) {
         clearInterval(interval);
         setTimeout(() => {
-          navigate("/"); // Retour à la map
+          navigate("/");
         }, 1000);
       }
     }, 16);
@@ -40,7 +38,6 @@ export default function Projets() {
         <Suspense fallback={null}>
           <group ref={groupRef}>
             <Stars radius={100} depth={50} count={5000} factor={4} fade />
-           
             <OrbitControls />
           </group>
         </Suspense>
