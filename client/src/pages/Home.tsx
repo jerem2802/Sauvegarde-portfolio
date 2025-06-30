@@ -7,24 +7,7 @@ import Radio3D from "../components/Radio3d";
 const Home: React.FC = () => {
 	return (
 		<div className="min-h-screen flex flex-col bg-gray-900 text-white">
-			{/* Navbar */}
-			<nav className="p-4 flex justify-between items-center bg-gray-800 shadow-md">
-				<h1 className="ml-9 text-2xl font-bold">Jérémy Tichané</h1>
-				<div className="space-x-32 mr-7">
-					<a href="#about" className="hover:text-blue-400">
-						À Propos
-					</a>
-					<a href="#projects" className="hover:text-blue-400">
-						Projets
-					</a>
-					<a href="#contact" className="hover:text-blue-400">
-						Contact
-					</a>
-					<a href="/admin" className="hover:text-red-400 font-semibold">
-						Admin
-					</a>
-				</div>
-			</nav>
+		
 
 			{/* Contenu principal */}
 			<main className="flex-grow">

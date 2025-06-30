@@ -7,7 +7,6 @@ import ISSModel from "../components/IssModel";
 import VerticalProjectCarousel from "../components/VerticalCarousel";
 
 
-
 export default function Projets() {
   const groupRef = useRef<THREE.Group>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -35,44 +34,51 @@ export default function Projets() {
   };
 
   return (
-    <div className="relative w-full h-screen bg-black">
-      <Canvas camera={{ position: [0, 0.6, 2.5], fov: 75 }}>
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[3, 5, 2]} intensity={1} />
-        <Suspense fallback={null}>
-          
-          <group ref={groupRef}>
-            <Stars radius={100} depth={50} count={5000} factor={4} fade />
-            <ISSModel speed={0.3} radius={5}/>
-            {/* Uncomment the next line to add a nebula effect */}
-            {/* <SpaceNebula count={1000} /> */}
-            <VerticalProjectCarousel/>
-            <OrbitControls
-  // enablePan={false}
-  // enableZoom={false}
-  // minPolarAngle={Math.PI / 2}
-  // maxPolarAngle={Math.PI / 2}
-  // minAzimuthAngle={0}
-  // maxAzimuthAngle={0}
-/>
-
-          </group>
-        </Suspense>
-      </Canvas>
-      <div
-  className="absolute top-4 right-4 text-cyan-300 text-sm text-right z-20 font-mono space-y-1"
+    <div className="relative w-full j h-screen bg-black">
+    <Canvas
+  camera={{ position: [0, 0.6, 2.5], fov: 75 }}
+  onCreated={({ camera }) => {
+    camera.layers.enable(1);
+  }}
 >
-  <div><span className="bg-cyan-500 text-black px-1 rounded">↑</span> / <span className="bg-cyan-500 text-black px-1 rounded">↓</span> : Naviguer</div>
-  <div><span className="bg-cyan-500 text-black px-1 rounded">Entrée</span> : Valider</div>
-  <div><span className="bg-cyan-500 text-black px-1 rounded">Échap</span> : Quitter</div>
-</div>
+  <Suspense fallback={null}>
+    <group ref={groupRef}>
+      <Stars radius={100} depth={50} count={5000} factor={4} fade />
+      <ISSModel speed={0.3} radius={5} />
+      <ambientLight intensity={0.3} />
+<directionalLight position={[5, 5, 5]} intensity={1} />
+
+      <VerticalProjectCarousel />
+      <OrbitControls />
+    </group>
+
+    
+   
+  </Suspense>
+</Canvas>
 
 
+      {/* UI - Contrôles clavier */}
+      <div className="absolute top-4 right-4 text-cyan-300 text-sm text-right z-20 font-mono space-y-1">
+        <div>
+          <span className="bg-cyan-500 text-black px-1 rounded">↑</span> /{" "}
+          <span className="bg-cyan-500 text-black px-1 rounded">↓</span> : Naviguer
+        </div>
+        <div>
+          <span className="bg-cyan-500 text-black px-1 rounded">Entrée</span> : Valider
+        </div>
+        <div>
+          <span className="bg-cyan-500 text-black px-1 rounded">Échap</span> : Quitter
+        </div>
+      </div>
+
+      {/* Overlay noir de transition */}
       <div
         ref={overlayRef}
         className="pointer-events-none absolute top-0 left-0 w-full h-full bg-black opacity-0 z-50"
       />
 
+      {/* Texte d’intro */}
       <div className="absolute top-4 left-4 text-white z-10">
         <h1 className="text-4xl font-bold">🚀 Mes Projets</h1>
         <p className="mt-2 text-lg max-w-md">

@@ -10,6 +10,7 @@ import AddProject from "./pages/AddProject";
 import APropos from "./pages/APropos";
 import Projets from "./pages/Projets";
 
+
 const router = createBrowserRouter([
 	{
 		path: "/",
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
 				path: "home",
 				element: <Home />,
 			},
+		
 			{
 				path: "a-propos",
 				element: <APropos />,

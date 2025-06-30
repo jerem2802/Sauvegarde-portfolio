@@ -1,7 +1,8 @@
-import { Text } from "@react-three/drei";
+// import { Text, Text3D } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
+
 
 export default function AnimatedFloatingText() {
   const ref1 = useRef<THREE.Mesh>(null);
@@ -27,7 +28,7 @@ export default function AnimatedFloatingText() {
 
   return (
     <>
-      <Text
+      {/* <Text3D
       
         ref={ref1}
         position={[-0.1, 1.1, 0.31]}
@@ -38,15 +39,15 @@ export default function AnimatedFloatingText() {
         anchorX="center"
         anchorY="middle"
         letterSpacing={0.16}
-       font="/Fonts/PermanentMarker-Regular.ttf"
+       font="/Fonts/Roboto-Regular.json"
 
         
       
       >
         Projets
-      </Text>
+      </Text3D>
 
-      <Text
+      <Text3D
         ref={ref2}
         position={[0.35, 0.75, 0.2]}
         fontSize={0.06}
@@ -56,13 +57,13 @@ export default function AnimatedFloatingText() {
         anchorX="center"
         anchorY="middle"
         letterSpacing={0.16}
-               font="/Fonts/PermanentMarker-Regular.ttf"
+              font="/Fonts/Roboto-Regular.json"
 
       >
         Contact
-      </Text>
+      </Text3D>
 
-        <Text
+        <Text3D
         ref={ref3}
         position={[-0.93, 1, 0.1]}
         fontSize={0.03}
@@ -72,11 +73,10 @@ export default function AnimatedFloatingText() {
         anchorX="center"
         anchorY="middle"
         letterSpacing={0.16}
-               font="/Fonts/PermanentMarker-Regular.ttf"
-
+               font="/Fonts/Roboto-Regular.json"
       >
         A Propos
-      </Text>
+      </Text3D> */}
       
     </>
   );
