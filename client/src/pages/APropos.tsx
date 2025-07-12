@@ -68,7 +68,7 @@ export default function APropos() {
 
       <button
         onClick={handleLeave}
-        className="absolute top-4 left-4 px-4 py-2 bg-white text-black rounded"
+        className="absolute top-4 left-4 px-4 py-2 bg-blue-400 font-bold text-black rounded"
       >
         Retour
       </button>

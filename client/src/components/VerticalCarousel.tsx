@@ -6,17 +6,20 @@ import { useNavigate } from "react-router-dom";
 import { TextureLoader } from "three";
 
 // === CONFIGURATION DES CARTES ===
-const cardSettings: Record<string, {
-  titlePosition?: [number, number, number];
-  titleSize?: number;
-  bevel?: boolean;
-}> = {
+const cardSettings: Record<
+  string,
+  {
+    titlePosition?: [number, number, number];
+    titleSize?: number;
+    bevel?: boolean;
+  }
+> = {
   "Domino's Cliker": {
-    titlePosition: [-1.04, 0, 0],
+    titlePosition: [-1.15, 0, 0.1],
     titleSize: 0.2,
   },
   Jam: {
-    titlePosition: [-1., -0.1, 0],
+    titlePosition: [-0.8, -0.1, 0],
     titleSize: 0.4,
   },
   Wildcom: {
@@ -26,23 +29,27 @@ const cardSettings: Record<string, {
   },
 };
 
-
 const projects = [
   {
     title: "Domino's Cliker",
-    description: "Idle Game + Production",
+    description:
+      "Jeu de clic interacif.\nAchetez des ingrédients\nmulplicateurs !\nEt multipliez vos parts de pizza !",
     texture: "/logo-pizza.png",
     color: "#FF0033",
+    url: "https://wildcodeschool-2024-09.github.io/JS-RemoteFR-Vendangeurs-P1-Dominos-Clicker/",
   },
   {
     title: "Jam",
-    description: "Multijoueur WebGL",
+    description:
+      "Une Plateforme d'écoute musicale\nconnectée à la librairie compléte\nDeezer où vous pouvez écouter\nvos artistes préférés.",
     texture: "/jam.png",
     color: "#FF7300",
+    url: "https://jam-music-client-vojs.vercel.app/",
   },
   {
     title: "Wildcom",
-    description: "Le réseau social\ndes développeurs",
+    description:
+      "Le réseau social\ndes développeurs.\nPartagez vos projets,\nvos idées, et collaborez !",
     texture: "/logo-wildcom.png",
     color: "#00FFFF",
   },
@@ -57,12 +64,25 @@ export default function VerticalProjectCarousel() {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       let next = selected;
-      if (e.key === "ArrowDown") next = Math.min(projects.length - 1, selected + 1);
-      else if (e.key === "ArrowUp") next = Math.max(0, selected - 1);
-      else if (e.key === "Enter") console.log("Projet validé :", projects[selected].title);
-      else if (e.key === "Escape") navigate("/");
 
-      if (next !== selected) setSelected(next);
+      if (e.key === "ArrowDown") {
+        next = Math.min(projects.length - 1, selected + 1);
+      } else if (e.key === "ArrowUp") {
+        next = Math.max(0, selected - 1);
+      } else if (e.key === "Enter") {
+        const selectedProject = projects[selected];
+        if (selectedProject.url) {
+          window.open(selectedProject.url, "_blank");
+        } else {
+          console.log("Projet validé :", selectedProject.title);
+        }
+      } else if (e.key === "Escape") {
+        navigate("/");
+      }
+
+      if (next !== selected) {
+        setSelected(next);
+      }
     };
 
     window.addEventListener("keydown", handleKey);
@@ -129,19 +149,21 @@ export default function VerticalProjectCarousel() {
               />
             </Text3D>
 
-            {/* Logo + Description si sélectionné */}
+            {/* Logo + Description + Indicateur */}
             {isSelected && (
               <>
-                <mesh position={[-2.5, 0, 0]}>
+                {/* Logo */}
+                <mesh position={[-2.5, 0, 0]} rotation={[0, 0.5, 0]}>
                   <planeGeometry args={[1, 1]} />
                   <meshBasicMaterial map={textures[i]} transparent />
                 </mesh>
 
-                <mesh position={[1.8, 0.5, 0]}>
+                {/* Description */}
+                <mesh position={[1.8, 0.2, 0]} rotation={[0, 0, 0]}>
                   <Text3D
                     font="/fonts/Orbitron_Regular.json"
-                    size={0.12}
-                    height={0.03}
+                    size={0.08}
+                    height={0.0}
                     curveSegments={6}
                     bevelEnabled={false}
                   >
@@ -153,6 +175,26 @@ export default function VerticalProjectCarousel() {
                     />
                   </Text3D>
                 </mesh>
+
+                {/* Indicateur d’action si cliquable */}
+                {project.url && (
+                  <mesh position={[0, -0.7, 0]}>
+                    <Text3D
+                      font="/fonts/Orbitron_Regular.json"
+                      size={0.08}
+                      height={0.01}
+                      curveSegments={4}
+                      bevelEnabled={false}
+                    >
+                      
+                      <meshStandardMaterial
+                        color={project.color}
+                        emissive={project.color}
+                        emissiveIntensity={0.8}
+                      />
+                    </Text3D>
+                  </mesh>
+                )}
               </>
             )}
           </group>

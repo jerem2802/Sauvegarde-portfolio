@@ -5,12 +5,35 @@ import * as THREE from "three";
 import { useNavigate } from "react-router-dom";
 import ISSModel from "../components/IssModel";
 import VerticalProjectCarousel from "../components/VerticalCarousel";
+import { useEffect } from "react";
 
 
 export default function Projets() {
   const groupRef = useRef<THREE.Group>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+ useEffect(() => {
+  const audio = new Audio("/sounds/projets-ambiance.mp3");
+  audio.loop = true;
+  audio.volume = 0.4;
+
+  const playAudio = () => {
+    audio.play().catch((err) => console.warn("Audio bloqué :", err));
+    window.removeEventListener("click", playAudio);
+  };
+
+  window.addEventListener("click", playAudio);
+
+  return () => {
+    // Nettoyage à la sortie du composant
+    window.removeEventListener("click", playAudio);
+    audio.pause();
+    audio.currentTime = 0;
+  };
+}, []);
+
+
 
   const handleBack = () => {
     if (!groupRef.current || !overlayRef.current) return;
@@ -80,15 +103,12 @@ export default function Projets() {
 
       {/* Texte d’intro */}
       <div className="absolute top-4 left-4 text-white z-10">
-        <h1 className="text-4xl font-bold">🚀 Mes Projets</h1>
-        <p className="mt-2 text-lg max-w-md">
-          Une collection de projets interactifs, visuels, expérimentaux.
-        </p>
+               
         <button
-          className="mt-4 px-4 py-2 bg-white text-black rounded"
+          className="mt-4 px-4 py-2 bg-blue-400 text-black rounded font-bold hover:bg-blue-500 transition-colors "
           onClick={handleBack}
         >
-          Retour à la ville
+          Retour 
         </button>
       </div>
     </div>
