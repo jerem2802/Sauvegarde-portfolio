@@ -14,8 +14,8 @@ export default defineConfig({
     include: [
       '@react-three/fiber',
       '@react-three/drei',
-      '@react-three/postprocessing',
-      'postprocessing'
+      // '@react-three/postprocessing',
+      // 'postprocessing'
     ]
   },
   server: {

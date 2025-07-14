@@ -9,28 +9,11 @@ import {
 } from 'three';
 
 /**
- * Creates a visual aid for rect area lights.
- *
- * `RectAreaLightHelper` must be added as a child of the light.
- *
- * ```js
- * const light = new THREE.RectAreaLight( 0xffffbb, 1.0, 5, 5 );
- * const helper = new RectAreaLightHelper( light );
- * light.add( helper );
- * ```
- *
- * @augments Line
- * @three_import import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
+ *  This helper must be added as a child of the light
  */
+
 class RectAreaLightHelper extends Line {
 
-	/**
-	 * Constructs a new rect area light helper.
-	 *
-	 * @param {RectAreaLight} light - The light to visualize.
-	 * @param {number|Color|string} [color] - The helper's color.
-	 * If this is not the set, the helper will take the color of the light.
-	 */
 	constructor( light, color ) {
 
 		const positions = [ 1, 1, 0, - 1, 1, 0, - 1, - 1, 0, 1, - 1, 0, 1, 1, 0 ];
@@ -43,20 +26,8 @@ class RectAreaLightHelper extends Line {
 
 		super( geometry, material );
 
-		/**
-		 * The light to visualize.
-		 *
-		 * @type {RectAreaLight}
-		 */
 		this.light = light;
-
-		/**
-		 * The helper's color. If `undefined`, the helper will take the color of the light.
-		 *
-		 * @type {number|Color|string|undefined}
-		 */
-		this.color = color;
-
+		this.color = color; // optional hardwired color for the helper
 		this.type = 'RectAreaLightHelper';
 
 		//
@@ -100,10 +71,6 @@ class RectAreaLightHelper extends Line {
 
 	}
 
-	/**
-	 * Frees the GPU-related resources allocated by this instance. Call this
-	 * method whenever this instance is no longer used in your app.
-	 */
 	dispose() {
 
 		this.geometry.dispose();

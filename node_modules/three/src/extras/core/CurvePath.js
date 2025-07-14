@@ -1,58 +1,30 @@
 import { Curve } from './Curve.js';
 import * as Curves from '../curves/Curves.js';
 
-/**
- * A base class extending {@link Curve}. `CurvePath` is simply an
- * array of connected curves, but retains the API of a curve.
- *
- * @augments Curve
- */
+/**************************************************************
+ *	Curved Path - a curve path is simply a array of connected
+ *  curves, but retains the api of a curve
+ **************************************************************/
+
 class CurvePath extends Curve {
 
-	/**
-	 * Constructs a new curve path.
-	 */
 	constructor() {
 
 		super();
 
 		this.type = 'CurvePath';
 
-		/**
-		 * An array of curves defining the
-		 * path.
-		 *
-		 * @type {Array<Curve>}
-		 */
 		this.curves = [];
-
-		/**
-		 * Whether the path should automatically be closed
-		 * by a line curve.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */
-		this.autoClose = false;
+		this.autoClose = false; // Automatically closes the path
 
 	}
 
-	/**
-	 * Adds a curve to this curve path.
-	 *
-	 * @param {Curve} curve - The curve to add.
-	 */
 	add( curve ) {
 
 		this.curves.push( curve );
 
 	}
 
-	/**
-	 * Adds a line curve to close the path.
-	 *
-	 * @return {CurvePath} A reference to this curve path.
-	 */
 	closePath() {
 
 		// Add a line curve if start and end of lines are not connected
@@ -70,24 +42,16 @@ class CurvePath extends Curve {
 
 	}
 
-	/**
-	 * This method returns a vector in 2D or 3D space (depending on the curve definitions)
-	 * for the given interpolation factor.
-	 *
-	 * @param {number} t - A interpolation factor representing a position on the curve. Must be in the range `[0,1]`.
-	 * @param {(Vector2|Vector3)} [optionalTarget] - The optional target vector the result is written to.
-	 * @return {?(Vector2|Vector3)} The position on the curve. It can be a 2D or 3D vector depending on the curve definition.
-	 */
+	// To get accurate point with reference to
+	// entire path distance at time t,
+	// following has to be done:
+
+	// 1. Length of each sub path have to be known
+	// 2. Locate and identify type of curve
+	// 3. Get t for the curve
+	// 4. Return curve.getPointAt(t')
+
 	getPoint( t, optionalTarget ) {
-
-		// To get accurate point with reference to
-		// entire path distance at time t,
-		// following has to be done:
-
-		// 1. Length of each sub path have to be known
-		// 2. Locate and identify type of curve
-		// 3. Get t for the curve
-		// 4. Return curve.getPointAt(t')
 
 		const d = t * this.getLength();
 		const curveLengths = this.getCurveLengths();
@@ -119,20 +83,19 @@ class CurvePath extends Curve {
 
 	}
 
-	getLength() {
+	// We cannot use the default THREE.Curve getPoint() with getLength() because in
+	// THREE.Curve, getLength() depends on getPoint() but in THREE.CurvePath
+	// getPoint() depends on getLength
 
-		// We cannot use the default THREE.Curve getPoint() with getLength() because in
-		// THREE.Curve, getLength() depends on getPoint() but in THREE.CurvePath
-		// getPoint() depends on getLength
+	getLength() {
 
 		const lens = this.getCurveLengths();
 		return lens[ lens.length - 1 ];
 
 	}
 
+	// cacheLengths must be recalculated.
 	updateArcLengths() {
-
-		// cacheLengths must be recalculated.
 
 		this.needsUpdate = true;
 		this.cacheLengths = null;
@@ -140,15 +103,11 @@ class CurvePath extends Curve {
 
 	}
 
-	/**
-	 * Returns list of cumulative curve lengths of the defined curves.
-	 *
-	 * @return {Array<number>} The curve lengths.
-	 */
+	// Compute lengths and cache them
+	// We cannot overwrite getLengths() because UtoT mapping uses it.
+
 	getCurveLengths() {
 
-		// Compute lengths and cache them
-		// We cannot overwrite getLengths() because UtoT mapping uses it.
 		// We use cache values if curves and cache array are same length
 
 		if ( this.cacheLengths && this.cacheLengths.length === this.curves.length ) {

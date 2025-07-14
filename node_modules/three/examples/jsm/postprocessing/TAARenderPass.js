@@ -6,80 +6,29 @@ import { SSAARenderPass } from './SSAARenderPass.js';
 
 /**
  *
- * Temporal Anti-Aliasing Render Pass.
+ * Temporal Anti-Aliasing Render Pass
  *
- * When there is no motion in the scene, the TAA render pass accumulates jittered camera
- * samples across frames to create a high quality anti-aliased result.
+ * When there is no motion in the scene, the TAA render pass accumulates jittered camera samples across frames to create a high quality anti-aliased result.
  *
- * Note: This effect uses no reprojection so it is no TRAA implementation.
+ * References:
  *
- * ```js
- * const taaRenderPass = new TAARenderPass( scene, camera );
- * taaRenderPass.unbiased = false;
- * composer.addPass( taaRenderPass );
- * ```
+ * TODO: Add support for motion vector pas so that accumulation of samples across frames can occur on dynamics scenes.
  *
- * @augments SSAARenderPass
- * @three_import import { TAARenderPass } from 'three/addons/postprocessing/TAARenderPass.js';
  */
+
 class TAARenderPass extends SSAARenderPass {
 
-	/**
-	 * Constructs a new TAA render pass.
-	 *
-	 * @param {Scene} scene - The scene to render.
-	 * @param {Camera} camera - The camera.
-	 * @param {?(number|Color|string)} [clearColor=0x000000] - The clear color of the render pass.
-	 * @param {?number} [clearAlpha=0] - The clear alpha of the render pass.
-	 */
 	constructor( scene, camera, clearColor, clearAlpha ) {
 
 		super( scene, camera, clearColor, clearAlpha );
 
-		/**
-		 * Overwritten and set to 0 by default.
-		 *
-		 * @type {number}
-		 * @default 0
-		 */
 		this.sampleLevel = 0;
-
-		/**
-		 * Whether to accumulate frames or not. This enables
-		 * the TAA.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */
 		this.accumulate = false;
-
-		/**
-		 * The accumulation index.
-		 *
-		 * @type {number}
-		 * @default -1
-		 */
 		this.accumulateIndex = - 1;
-
-		// internals
-
-		this._sampleRenderTarget = null;
-		this._holdRenderTarget = null;
 
 	}
 
-	/**
-	 * Performs the TAA render pass.
-	 *
-	 * @param {WebGLRenderer} renderer - The renderer.
-	 * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
-	 * destination for the pass.
-	 * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
-	 * previous pass from this buffer.
-	 * @param {number} deltaTime - The delta time in seconds.
-	 * @param {boolean} maskActive - Whether masking is active or not.
-	 */
-	render( renderer, writeBuffer, readBuffer, deltaTime/*, maskActive*/ ) {
+	render( renderer, writeBuffer, readBuffer, deltaTime ) {
 
 		if ( this.accumulate === false ) {
 
@@ -92,23 +41,23 @@ class TAARenderPass extends SSAARenderPass {
 
 		const jitterOffsets = _JitterVectors[ 5 ];
 
-		if ( this._sampleRenderTarget === null ) {
+		if ( this.sampleRenderTarget === undefined ) {
 
-			this._sampleRenderTarget = new WebGLRenderTarget( readBuffer.width, readBuffer.height, { type: HalfFloatType } );
-			this._sampleRenderTarget.texture.name = 'TAARenderPass.sample';
+			this.sampleRenderTarget = new WebGLRenderTarget( readBuffer.width, readBuffer.height, { type: HalfFloatType } );
+			this.sampleRenderTarget.texture.name = 'TAARenderPass.sample';
 
 		}
 
-		if ( this._holdRenderTarget === null ) {
+		if ( this.holdRenderTarget === undefined ) {
 
-			this._holdRenderTarget = new WebGLRenderTarget( readBuffer.width, readBuffer.height, { type: HalfFloatType } );
-			this._holdRenderTarget.texture.name = 'TAARenderPass.hold';
+			this.holdRenderTarget = new WebGLRenderTarget( readBuffer.width, readBuffer.height, { type: HalfFloatType } );
+			this.holdRenderTarget.texture.name = 'TAARenderPass.hold';
 
 		}
 
 		if ( this.accumulateIndex === - 1 ) {
 
-			super.render( renderer, this._holdRenderTarget, readBuffer, deltaTime );
+			super.render( renderer, this.holdRenderTarget, readBuffer, deltaTime );
 
 			this.accumulateIndex = 0;
 
@@ -124,8 +73,8 @@ class TAARenderPass extends SSAARenderPass {
 
 		if ( this.accumulateIndex >= 0 && this.accumulateIndex < jitterOffsets.length ) {
 
-			this._copyUniforms[ 'opacity' ].value = sampleWeight;
-			this._copyUniforms[ 'tDiffuse' ].value = writeBuffer.texture;
+			this.copyUniforms[ 'opacity' ].value = sampleWeight;
+			this.copyUniforms[ 'tDiffuse' ].value = writeBuffer.texture;
 
 			// render the scene multiple times, each slightly jitter offset from the last and accumulate the results.
 			const numSamplesPerFrame = Math.pow( 2, this.sampleLevel );
@@ -147,7 +96,7 @@ class TAARenderPass extends SSAARenderPass {
 				renderer.clear();
 				renderer.render( this.scene, this.camera );
 
-				renderer.setRenderTarget( this._sampleRenderTarget );
+				renderer.setRenderTarget( this.sampleRenderTarget );
 				if ( this.accumulateIndex === 0 ) {
 
 					renderer.setClearColor( 0x000000, 0.0 );
@@ -155,7 +104,7 @@ class TAARenderPass extends SSAARenderPass {
 
 				}
 
-				this._fsQuad.render( renderer );
+				this.fsQuad.render( renderer );
 
 				this.accumulateIndex ++;
 
@@ -172,20 +121,20 @@ class TAARenderPass extends SSAARenderPass {
 
 		if ( accumulationWeight > 0 ) {
 
-			this._copyUniforms[ 'opacity' ].value = 1.0;
-			this._copyUniforms[ 'tDiffuse' ].value = this._sampleRenderTarget.texture;
+			this.copyUniforms[ 'opacity' ].value = 1.0;
+			this.copyUniforms[ 'tDiffuse' ].value = this.sampleRenderTarget.texture;
 			renderer.setRenderTarget( writeBuffer );
 			renderer.clear();
-			this._fsQuad.render( renderer );
+			this.fsQuad.render( renderer );
 
 		}
 
 		if ( accumulationWeight < 1.0 ) {
 
-			this._copyUniforms[ 'opacity' ].value = 1.0 - accumulationWeight;
-			this._copyUniforms[ 'tDiffuse' ].value = this._holdRenderTarget.texture;
+			this.copyUniforms[ 'opacity' ].value = 1.0 - accumulationWeight;
+			this.copyUniforms[ 'tDiffuse' ].value = this.holdRenderTarget.texture;
 			renderer.setRenderTarget( writeBuffer );
-			this._fsQuad.render( renderer );
+			this.fsQuad.render( renderer );
 
 		}
 
@@ -194,15 +143,11 @@ class TAARenderPass extends SSAARenderPass {
 
 	}
 
-	/**
-	 * Frees the GPU-related resources allocated by this instance. Call this
-	 * method whenever the pass is no longer used in your app.
-	 */
 	dispose() {
 
 		super.dispose();
 
-		if ( this._holdRenderTarget ) this._holdRenderTarget.dispose();
+		if ( this.holdRenderTarget ) this.holdRenderTarget.dispose();
 
 	}
 

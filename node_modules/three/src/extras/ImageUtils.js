@@ -3,21 +3,9 @@ import { SRGBToLinear } from '../math/ColorManagement.js';
 
 let _canvas;
 
-/**
- * A class containing utility functions for images.
- *
- * @hideconstructor
- */
 class ImageUtils {
 
-	/**
-	 * Returns a data URI containing a representation of the given image.
-	 *
-	 * @param {(HTMLImageElement|HTMLCanvasElement)} image - The image object.
-	 * @param {string} [type='image/png'] - Indicates the image format.
-	 * @return {string} The data URI.
-	 */
-	static getDataURL( image, type = 'image/png' ) {
+	static getDataURL( image ) {
 
 		if ( /^data:/i.test( image.src ) ) {
 
@@ -60,16 +48,20 @@ class ImageUtils {
 
 		}
 
-		return canvas.toDataURL( type );
+		if ( canvas.width > 2048 || canvas.height > 2048 ) {
+
+			console.warn( 'THREE.ImageUtils.getDataURL: Image converted to jpg for performance reasons', image );
+
+			return canvas.toDataURL( 'image/jpeg', 0.6 );
+
+		} else {
+
+			return canvas.toDataURL( 'image/png' );
+
+		}
 
 	}
 
-	/**
-	 * Converts the given sRGB image data to linear color space.
-	 *
-	 * @param {(HTMLImageElement|HTMLCanvasElement|ImageBitmap|Object)} image - The image object.
-	 * @return {HTMLCanvasElement|Object} The converted image.
-	 */
 	static sRGBToLinear( image ) {
 
 		if ( ( typeof HTMLImageElement !== 'undefined' && image instanceof HTMLImageElement ) ||

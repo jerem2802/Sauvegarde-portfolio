@@ -20,26 +20,24 @@ function WebGLCubeUVMaps( renderer ) {
 
 			if ( isEquirectMap || isCubeMap ) {
 
-				let renderTarget = cubeUVmaps.get( texture );
+				if ( texture.isRenderTargetTexture && texture.needsPMREMUpdate === true ) {
 
-				const currentPMREMVersion = renderTarget !== undefined ? renderTarget.texture.pmremVersion : 0;
+					texture.needsPMREMUpdate = false;
 
-				if ( texture.isRenderTargetTexture && texture.pmremVersion !== currentPMREMVersion ) {
+					let renderTarget = cubeUVmaps.get( texture );
 
 					if ( pmremGenerator === null ) pmremGenerator = new PMREMGenerator( renderer );
 
 					renderTarget = isEquirectMap ? pmremGenerator.fromEquirectangular( texture, renderTarget ) : pmremGenerator.fromCubemap( texture, renderTarget );
-					renderTarget.texture.pmremVersion = texture.pmremVersion;
-
 					cubeUVmaps.set( texture, renderTarget );
 
 					return renderTarget.texture;
 
 				} else {
 
-					if ( renderTarget !== undefined ) {
+					if ( cubeUVmaps.has( texture ) ) {
 
-						return renderTarget.texture;
+						return cubeUVmaps.get( texture ).texture;
 
 					} else {
 
@@ -49,9 +47,7 @@ function WebGLCubeUVMaps( renderer ) {
 
 							if ( pmremGenerator === null ) pmremGenerator = new PMREMGenerator( renderer );
 
-							renderTarget = isEquirectMap ? pmremGenerator.fromEquirectangular( texture ) : pmremGenerator.fromCubemap( texture );
-							renderTarget.texture.pmremVersion = texture.pmremVersion;
-
+							const renderTarget = isEquirectMap ? pmremGenerator.fromEquirectangular( texture ) : pmremGenerator.fromCubemap( texture );
 							cubeUVmaps.set( texture, renderTarget );
 
 							texture.addEventListener( 'dispose', onTextureDispose );

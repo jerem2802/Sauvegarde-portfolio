@@ -15,7 +15,6 @@ export default /* glsl */`
 		varying vec4 vDirectionalShadowCoord[ NUM_DIR_LIGHT_SHADOWS ];
 
 		struct DirectionalLightShadow {
-			float shadowIntensity;
 			float shadowBias;
 			float shadowNormalBias;
 			float shadowRadius;
@@ -29,7 +28,6 @@ export default /* glsl */`
 	#if NUM_SPOT_LIGHT_SHADOWS > 0
 
 		struct SpotLightShadow {
-			float shadowIntensity;
 			float shadowBias;
 			float shadowNormalBias;
 			float shadowRadius;
@@ -46,7 +44,6 @@ export default /* glsl */`
 		varying vec4 vPointShadowCoord[ NUM_POINT_LIGHT_SHADOWS ];
 
 		struct PointLightShadow {
-			float shadowIntensity;
 			float shadowBias;
 			float shadowNormalBias;
 			float shadowRadius;

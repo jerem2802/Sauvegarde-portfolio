@@ -1,10 +1,5 @@
 import { BackSide } from '../../constants.js';
 import { getUnlitUniformColorSpace } from '../shaders/UniformsUtils.js';
-import { Euler } from '../../math/Euler.js';
-import { Matrix4 } from '../../math/Matrix4.js';
-
-const _e1 = /*@__PURE__*/ new Euler();
-const _m1 = /*@__PURE__*/ new Matrix4();
 
 function WebGLMaterials( renderer, properties ) {
 
@@ -214,29 +209,11 @@ function WebGLMaterials( renderer, properties ) {
 
 		}
 
-		const materialProperties = properties.get( material );
-
-		const envMap = materialProperties.envMap;
-		const envMapRotation = materialProperties.envMapRotation;
+		const envMap = properties.get( material ).envMap;
 
 		if ( envMap ) {
 
 			uniforms.envMap.value = envMap;
-
-			_e1.copy( envMapRotation );
-
-			// accommodate left-handed frame
-			_e1.x *= - 1; _e1.y *= - 1; _e1.z *= - 1;
-
-			if ( envMap.isCubeTexture && envMap.isRenderTargetTexture === false ) {
-
-				// environment maps which are not cube render targets or PMREMs follow a different convention
-				_e1.y *= - 1;
-				_e1.z *= - 1;
-
-			}
-
-			uniforms.envMapRotation.value.setFromMatrix4( _m1.makeRotationFromEuler( _e1 ) );
 
 			uniforms.flipEnvMap.value = ( envMap.isCubeTexture && envMap.isRenderTargetTexture === false ) ? - 1 : 1;
 
@@ -249,7 +226,11 @@ function WebGLMaterials( renderer, properties ) {
 		if ( material.lightMap ) {
 
 			uniforms.lightMap.value = material.lightMap;
-			uniforms.lightMapIntensity.value = material.lightMapIntensity;
+
+			// artist-friendly light intensity scaling factor
+			const scaleFactor = ( renderer._useLegacyLights === true ) ? Math.PI : 1;
+
+			uniforms.lightMapIntensity.value = material.lightMapIntensity * scaleFactor;
 
 			refreshTransformUniform( material.lightMap, uniforms.lightMapTransform );
 
@@ -389,10 +370,11 @@ function WebGLMaterials( renderer, properties ) {
 
 		}
 
-		if ( material.envMap ) {
+		const envMap = properties.get( material ).envMap;
+
+		if ( envMap ) {
 
 			//uniforms.envMap.value = material.envMap; // part of uniforms common
-
 			uniforms.envMapIntensity.value = material.envMapIntensity;
 
 		}
@@ -463,12 +445,6 @@ function WebGLMaterials( renderer, properties ) {
 				}
 
 			}
-
-		}
-
-		if ( material.dispersion > 0 ) {
-
-			uniforms.dispersion.value = material.dispersion;
 
 		}
 

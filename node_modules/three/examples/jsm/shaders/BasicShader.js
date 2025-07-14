@@ -1,14 +1,7 @@
 /**
- * @module BasicShader
- * @three_import import { BasicShader } from 'three/addons/shaders/BasicShader.js';
+ * Simple test shader
  */
 
-/**
- * Simple shader for testing.
- *
- * @constant
- * @type {ShaderMaterial~Shader}
- */
 const BasicShader = {
 
 	name: 'BasicShader',

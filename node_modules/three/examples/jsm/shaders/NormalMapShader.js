@@ -3,15 +3,10 @@ import {
 } from 'three';
 
 /**
- * @module NormalMapShader
- * @three_import import { NormalMapShader } from 'three/addons/shaders/NormalMapShader.js';
+ * Normal map shader
+ * - compute normals from heightmap
  */
 
-/**
- * Normal map shader, compute normals from heightmap.
- * @constant
- * @type {ShaderMaterial~Shader}
- */
 const NormalMapShader = {
 
 	name: 'NormalMapShader',

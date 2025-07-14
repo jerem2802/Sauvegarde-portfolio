@@ -1,8 +1,11 @@
 ﻿import { IntType } from '../../constants.js';
 
-function WebGLBindingStates( gl, attributes ) {
+function WebGLBindingStates( gl, extensions, attributes, capabilities ) {
 
 	const maxVertexAttributes = gl.getParameter( gl.MAX_VERTEX_ATTRIBS );
+
+	const extension = capabilities.isWebGL2 ? null : extensions.get( 'OES_vertex_array_object' );
+	const vaoAvailable = capabilities.isWebGL2 || extension !== null;
 
 	const bindingStates = {};
 
@@ -14,18 +17,38 @@ function WebGLBindingStates( gl, attributes ) {
 
 		let updateBuffers = false;
 
-		const state = getBindingState( geometry, program, material );
+		if ( vaoAvailable ) {
 
-		if ( currentState !== state ) {
+			const state = getBindingState( geometry, program, material );
 
-			currentState = state;
-			bindVertexArrayObject( currentState.object );
+			if ( currentState !== state ) {
+
+				currentState = state;
+				bindVertexArrayObject( currentState.object );
+
+			}
+
+			updateBuffers = needsUpdate( object, geometry, program, index );
+
+			if ( updateBuffers ) saveCache( object, geometry, program, index );
+
+		} else {
+
+			const wireframe = ( material.wireframe === true );
+
+			if ( currentState.geometry !== geometry.id ||
+				currentState.program !== program.id ||
+				currentState.wireframe !== wireframe ) {
+
+				currentState.geometry = geometry.id;
+				currentState.program = program.id;
+				currentState.wireframe = wireframe;
+
+				updateBuffers = true;
+
+			}
 
 		}
-
-		updateBuffers = needsUpdate( object, geometry, program, index );
-
-		if ( updateBuffers ) saveCache( object, geometry, program, index );
 
 		if ( index !== null ) {
 
@@ -51,19 +74,25 @@ function WebGLBindingStates( gl, attributes ) {
 
 	function createVertexArrayObject() {
 
-		return gl.createVertexArray();
+		if ( capabilities.isWebGL2 ) return gl.createVertexArray();
+
+		return extension.createVertexArrayOES();
 
 	}
 
 	function bindVertexArrayObject( vao ) {
 
-		return gl.bindVertexArray( vao );
+		if ( capabilities.isWebGL2 ) return gl.bindVertexArray( vao );
+
+		return extension.bindVertexArrayOES( vao );
 
 	}
 
 	function deleteVertexArrayObject( vao ) {
 
-		return gl.deleteVertexArray( vao );
+		if ( capabilities.isWebGL2 ) return gl.deleteVertexArray( vao );
+
+		return extension.deleteVertexArrayOES( vao );
 
 	}
 
@@ -261,7 +290,9 @@ function WebGLBindingStates( gl, attributes ) {
 
 		if ( attributeDivisors[ attribute ] !== meshPerAttribute ) {
 
-			gl.vertexAttribDivisor( attribute, meshPerAttribute );
+			const extension = capabilities.isWebGL2 ? gl : extensions.get( 'ANGLE_instanced_arrays' );
+
+			extension[ capabilities.isWebGL2 ? 'vertexAttribDivisor' : 'vertexAttribDivisorANGLE' ]( attribute, meshPerAttribute );
 			attributeDivisors[ attribute ] = meshPerAttribute;
 
 		}
@@ -302,6 +333,12 @@ function WebGLBindingStates( gl, attributes ) {
 
 	function setupVertexAttributes( object, material, program, geometry ) {
 
+		if ( capabilities.isWebGL2 === false && ( object.isInstancedMesh || geometry.isInstancedBufferGeometry ) ) {
+
+			if ( extensions.get( 'ANGLE_instanced_arrays' ) === null ) return;
+
+		}
+
 		initAttributes();
 
 		const geometryAttributes = geometry.attributes;
@@ -340,9 +377,9 @@ function WebGLBindingStates( gl, attributes ) {
 					const type = attribute.type;
 					const bytesPerElement = attribute.bytesPerElement;
 
-					// check for integer attributes
+					// check for integer attributes (WebGL 2 only)
 
-					const integer = ( type === gl.INT || type === gl.UNSIGNED_INT || geometryAttribute.gpuType === IntType );
+					const integer = ( capabilities.isWebGL2 === true && ( type === gl.INT || type === gl.UNSIGNED_INT || geometryAttribute.gpuType === IntType ) );
 
 					if ( geometryAttribute.isInterleavedBufferAttribute ) {
 

@@ -1,17 +1,14 @@
 /**
- * @module DigitalGlitch
- * @three_import import { DigitalGlitch } from 'three/addons/shaders/DigitalGlitch.js';
- */
-
-/**
- * Digital glitch shader.
+ * RGB Shift Shader
+ * Shifts red and blue channels from center in opposite directions
+ * Ported from http://kriss.cx/tom/2009/05/rgb-shift/
+ * by Tom Butterworth / http://kriss.cx/tom/
  *
- * @constant
- * @type {ShaderMaterial~Shader}
+ * amount: shift distance (1 is width of input)
+ * angle: shift angle in radians
  */
-const DigitalGlitch = {
 
-	name: 'DigitalGlitch',
+const DigitalGlitch = {
 
 	uniforms: {
 

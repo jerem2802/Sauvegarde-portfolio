@@ -13,82 +13,29 @@
  * Time complexity is O(1) for linear access crossing at most two points
  * and O(log N) for random access, where N is the number of positions.
  *
- * References: {@link http://www.oodesign.com/template-method-pattern.html}
+ * References:
  *
- * @abstract
+ * 		http://www.oodesign.com/template-method-pattern.html
+ *
  */
+
 class Interpolant {
 
-	/**
-	 * Constructs a new interpolant.
-	 *
-	 * @param {TypedArray} parameterPositions - The parameter positions hold the interpolation factors.
-	 * @param {TypedArray} sampleValues - The sample values.
-	 * @param {number} sampleSize - The sample size
-	 * @param {TypedArray} [resultBuffer] - The result buffer.
-	 */
 	constructor( parameterPositions, sampleValues, sampleSize, resultBuffer ) {
 
-		/**
-		 * The parameter positions.
-		 *
-		 * @type {TypedArray}
-		 */
 		this.parameterPositions = parameterPositions;
-
-		/**
-		 * A cache index.
-		 *
-		 * @private
-		 * @type {number}
-		 * @default 0
-		 */
 		this._cachedIndex = 0;
 
-		/**
-		 * The result buffer.
-		 *
-		 * @type {TypedArray}
-		 */
-		this.resultBuffer = resultBuffer !== undefined ? resultBuffer : new sampleValues.constructor( sampleSize );
-
-		/**
-		 * The sample values.
-		 *
-		 * @type {TypedArray}
-		 */
+		this.resultBuffer = resultBuffer !== undefined ?
+			resultBuffer : new sampleValues.constructor( sampleSize );
 		this.sampleValues = sampleValues;
-
-		/**
-		 * The value size.
-		 *
-		 * @type {TypedArray}
-		 */
 		this.valueSize = sampleSize;
 
-		/**
-		 * The interpolation settings.
-		 *
-		 * @type {?Object}
-		 * @default null
-		 */
 		this.settings = null;
-
-		/**
-		 * The default settings object.
-		 *
-		 * @type {Object}
-		 */
 		this.DefaultSettings_ = {};
 
 	}
 
-	/**
-	 * Evaluate the interpolant at position `t`.
-	 *
-	 * @param {number} t - The interpolation factor.
-	 * @return {TypedArray} The result buffer.
-	 */
 	evaluate( t ) {
 
 		const pp = this.parameterPositions;
@@ -249,23 +196,12 @@ class Interpolant {
 
 	}
 
-	/**
-	 * Returns the interpolation settings.
-	 *
-	 * @return {Object} The interpolation settings.
-	 */
 	getSettings_() {
 
 		return this.settings || this.DefaultSettings_;
 
 	}
 
-	/**
-	 * Copies a sample value to the result buffer.
-	 *
-	 * @param {number} index - An index into the sample value buffer.
-	 * @return {TypedArray} The result buffer.
-	 */
 	copySampleValue_( index ) {
 
 		// copies a sample value to the result buffer
@@ -285,16 +221,8 @@ class Interpolant {
 
 	}
 
-	/**
-	 * Copies a sample value to the result buffer.
-	 *
-	 * @abstract
-	 * @param {number} i1 - An index into the sample value buffer.
-	 * @param {number} t0 - The previous interpolation factor.
-	 * @param {number} t - The current interpolation factor.
-	 * @param {number} t1 - The next interpolation factor.
-	 * @return {TypedArray} The result buffer.
-	 */
+	// Template methods for derived classes:
+
 	interpolate_( /* i1, t0, t, t1 */ ) {
 
 		throw new Error( 'call to abstract method' );
@@ -302,13 +230,6 @@ class Interpolant {
 
 	}
 
-	/**
-	 * Optional method that is executed when the interval has changed.
-	 *
-	 * @param {number} i1 - An index into the sample value buffer.
-	 * @param {number} t0 - The previous interpolation factor.
-	 * @param {number} t - The current interpolation factor.
-	 */
 	intervalChanged_( /* i1, t0, t1 */ ) {
 
 		// empty

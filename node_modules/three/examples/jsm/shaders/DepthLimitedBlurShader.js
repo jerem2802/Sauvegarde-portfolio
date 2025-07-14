@@ -3,18 +3,9 @@ import {
 } from 'three';
 
 /**
- * @module DepthLimitedBlurShader
- * @three_import import { DepthLimitedBlurShader, BlurShaderUtils } from 'three/addons/shaders/DepthLimitedBlurShader.js';
+ * TODO
  */
 
-/**
- * TODO
- *
- * Used by {@link SAOPass}.
- *
- * @constant
- * @type {ShaderMaterial~Shader}
- */
 const DepthLimitedBlurShader = {
 
 	name: 'DepthLimitedBlurShader',

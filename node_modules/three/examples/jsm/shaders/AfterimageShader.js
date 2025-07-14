@@ -1,14 +1,9 @@
 /**
- * @module AfterimageShader
- * @three_import import { AfterimageShader } from 'three/addons/shaders/AfterimageShader.js';
+ * Afterimage shader
+ * I created this effect inspired by a demo on codepen:
+ * https://codepen.io/brunoimbrizi/pen/MoRJaN?page=1&
  */
 
-/**
- * Inspired by [Three.js FBO motion trails]{@link https://codepen.io/brunoimbrizi/pen/MoRJaN?page=1&}.
- *
- * @constant
- * @type {ShaderMaterial~Shader}
- */
 const AfterimageShader = {
 
 	name: 'AfterimageShader',

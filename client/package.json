@@ -12,12 +12,10 @@
   "dependencies": {
     "@react-three/drei": "^10.3.0",
     "@react-three/fiber": "^9.1.4",
-    "@react-three/postprocessing": "^2.19.1",
     "@tailwindcss/vite": "^4.0.6",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "framer-motion": "^12.4.2",
-    "postprocessing": "^6.34.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5",

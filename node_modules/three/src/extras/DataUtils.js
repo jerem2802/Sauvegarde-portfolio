@@ -139,13 +139,8 @@ function _generateTables() {
 
 }
 
-/**
- * Returns a half precision floating point value (FP16) from the given single
- * precision floating point value (FP32).
- *
- * @param {number} val - A single precision floating point value.
- * @return {number} The FP16 value.
- */
+// float32 to float16
+
 function toHalfFloat( val ) {
 
 	if ( Math.abs( val ) > 65504 ) console.warn( 'THREE.DataUtils.toHalfFloat(): Value out of range.' );
@@ -159,13 +154,8 @@ function toHalfFloat( val ) {
 
 }
 
-/**
- * Returns a single precision floating point value (FP32) from the given half
- * precision floating point value (FP16).
- *
- * @param {number} val - A half precision floating point value.
- * @return {number} The FP32 value.
- */
+// float16 to float32
+
 function fromHalfFloat( val ) {
 
 	const m = val >> 10;
@@ -174,40 +164,10 @@ function fromHalfFloat( val ) {
 
 }
 
-/**
- * A class containing utility functions for data.
- *
- * @hideconstructor
- */
-class DataUtils {
-
-	/**
-	 * Returns a half precision floating point value (FP16) from the given single
-	 * precision floating point value (FP32).
-	 *
-	 * @param {number} val - A single precision floating point value.
-	 * @return {number} The FP16 value.
-	 */
-	static toHalfFloat( val ) {
-
-		return toHalfFloat( val );
-
-	}
-
-	/**
-	 * Returns a single precision floating point value (FP32) from the given half
-	 * precision floating point value (FP16).
-	 *
-	 * @param {number} val - A half precision floating point value.
-	 * @return {number} The FP32 value.
-	 */
-	static fromHalfFloat( val ) {
-
-		return fromHalfFloat( val );
-
-	}
-
-}
+const DataUtils = {
+	toHalfFloat: toHalfFloat,
+	fromHalfFloat: fromHalfFloat,
+};
 
 export {
 	toHalfFloat,

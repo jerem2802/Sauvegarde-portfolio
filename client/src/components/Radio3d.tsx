@@ -100,7 +100,17 @@ export default function Radio3D() {
               <>
                 <AnimatedFloatingText />
                 <RadioModel />
-             
+                <Text
+                  position={[0, 0.07, 0.5]}
+                  rotation={[-Math.PI / 2, 0, 0]}
+                  fontSize={0.2}
+                  outlineWidth={0}
+                  color="white"
+                  anchorX="center"
+                  anchorY="middle"
+                >
+                  Jérémy Tichané
+                </Text>
               </>
             )}
 
@@ -120,7 +130,8 @@ export default function Radio3D() {
               </>
             ) : (
               <OrbitControls ref={orbitRefExterior} />
-            )}
+            )
+            }
           </group>
         </Suspense>
       </Canvas>

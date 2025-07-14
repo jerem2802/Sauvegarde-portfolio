@@ -1,14 +1,8 @@
 /**
- * @module LuminosityShader
- * @three_import import { LuminosityShader } from 'three/addons/shaders/LuminosityShader.js';
+ * Luminosity
+ * http://en.wikipedia.org/wiki/Luminosity
  */
 
-/**
- * Luminosity shader.
- *
- * @constant
- * @type {ShaderMaterial~Shader}
- */
 const LuminosityShader = {
 
 	name: 'LuminosityShader',

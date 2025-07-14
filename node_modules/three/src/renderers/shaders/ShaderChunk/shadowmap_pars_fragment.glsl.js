@@ -19,7 +19,6 @@ export default /* glsl */`
 		varying vec4 vDirectionalShadowCoord[ NUM_DIR_LIGHT_SHADOWS ];
 
 		struct DirectionalLightShadow {
-			float shadowIntensity;
 			float shadowBias;
 			float shadowNormalBias;
 			float shadowRadius;
@@ -35,7 +34,6 @@ export default /* glsl */`
 		uniform sampler2D spotShadowMap[ NUM_SPOT_LIGHT_SHADOWS ];
 
 		struct SpotLightShadow {
-			float shadowIntensity;
 			float shadowBias;
 			float shadowNormalBias;
 			float shadowRadius;
@@ -52,7 +50,6 @@ export default /* glsl */`
 		varying vec4 vPointShadowCoord[ NUM_POINT_LIGHT_SHADOWS ];
 
 		struct PointLightShadow {
-			float shadowIntensity;
 			float shadowBias;
 			float shadowNormalBias;
 			float shadowRadius;
@@ -106,7 +103,7 @@ export default /* glsl */`
 
 	}
 
-	float getShadow( sampler2D shadowMap, vec2 shadowMapSize, float shadowIntensity, float shadowBias, float shadowRadius, vec4 shadowCoord ) {
+	float getShadow( sampler2D shadowMap, vec2 shadowMapSize, float shadowBias, float shadowRadius, vec4 shadowCoord ) {
 
 		float shadow = 1.0;
 
@@ -199,7 +196,7 @@ export default /* glsl */`
 
 		}
 
-		return mix( 1.0, shadow, shadowIntensity );
+		return shadow;
 
 	}
 
@@ -274,52 +271,42 @@ export default /* glsl */`
 
 	}
 
-	float getPointShadow( sampler2D shadowMap, vec2 shadowMapSize, float shadowIntensity, float shadowBias, float shadowRadius, vec4 shadowCoord, float shadowCameraNear, float shadowCameraFar ) {
+	float getPointShadow( sampler2D shadowMap, vec2 shadowMapSize, float shadowBias, float shadowRadius, vec4 shadowCoord, float shadowCameraNear, float shadowCameraFar ) {
 
-		float shadow = 1.0;
+		vec2 texelSize = vec2( 1.0 ) / ( shadowMapSize * vec2( 4.0, 2.0 ) );
 
 		// for point lights, the uniform @vShadowCoord is re-purposed to hold
 		// the vector from the light to the world-space position of the fragment.
 		vec3 lightToPosition = shadowCoord.xyz;
-		
-		float lightToPositionLength = length( lightToPosition );
 
-		if ( lightToPositionLength - shadowCameraFar <= 0.0 && lightToPositionLength - shadowCameraNear >= 0.0 ) {
+		// dp = normalized distance from light to fragment position
+		float dp = ( length( lightToPosition ) - shadowCameraNear ) / ( shadowCameraFar - shadowCameraNear ); // need to clamp?
+		dp += shadowBias;
 
-			// dp = normalized distance from light to fragment position
-			float dp = ( lightToPositionLength - shadowCameraNear ) / ( shadowCameraFar - shadowCameraNear ); // need to clamp?
-			dp += shadowBias;
+		// bd3D = base direction 3D
+		vec3 bd3D = normalize( lightToPosition );
 
-			// bd3D = base direction 3D
-			vec3 bd3D = normalize( lightToPosition );
+		#if defined( SHADOWMAP_TYPE_PCF ) || defined( SHADOWMAP_TYPE_PCF_SOFT ) || defined( SHADOWMAP_TYPE_VSM )
 
-			vec2 texelSize = vec2( 1.0 ) / ( shadowMapSize * vec2( 4.0, 2.0 ) );
+			vec2 offset = vec2( - 1, 1 ) * shadowRadius * texelSize.y;
 
-			#if defined( SHADOWMAP_TYPE_PCF ) || defined( SHADOWMAP_TYPE_PCF_SOFT ) || defined( SHADOWMAP_TYPE_VSM )
+			return (
+				texture2DCompare( shadowMap, cubeToUV( bd3D + offset.xyy, texelSize.y ), dp ) +
+				texture2DCompare( shadowMap, cubeToUV( bd3D + offset.yyy, texelSize.y ), dp ) +
+				texture2DCompare( shadowMap, cubeToUV( bd3D + offset.xyx, texelSize.y ), dp ) +
+				texture2DCompare( shadowMap, cubeToUV( bd3D + offset.yyx, texelSize.y ), dp ) +
+				texture2DCompare( shadowMap, cubeToUV( bd3D, texelSize.y ), dp ) +
+				texture2DCompare( shadowMap, cubeToUV( bd3D + offset.xxy, texelSize.y ), dp ) +
+				texture2DCompare( shadowMap, cubeToUV( bd3D + offset.yxy, texelSize.y ), dp ) +
+				texture2DCompare( shadowMap, cubeToUV( bd3D + offset.xxx, texelSize.y ), dp ) +
+				texture2DCompare( shadowMap, cubeToUV( bd3D + offset.yxx, texelSize.y ), dp )
+			) * ( 1.0 / 9.0 );
 
-				vec2 offset = vec2( - 1, 1 ) * shadowRadius * texelSize.y;
+		#else // no percentage-closer filtering
 
-				shadow = (
-					texture2DCompare( shadowMap, cubeToUV( bd3D + offset.xyy, texelSize.y ), dp ) +
-					texture2DCompare( shadowMap, cubeToUV( bd3D + offset.yyy, texelSize.y ), dp ) +
-					texture2DCompare( shadowMap, cubeToUV( bd3D + offset.xyx, texelSize.y ), dp ) +
-					texture2DCompare( shadowMap, cubeToUV( bd3D + offset.yyx, texelSize.y ), dp ) +
-					texture2DCompare( shadowMap, cubeToUV( bd3D, texelSize.y ), dp ) +
-					texture2DCompare( shadowMap, cubeToUV( bd3D + offset.xxy, texelSize.y ), dp ) +
-					texture2DCompare( shadowMap, cubeToUV( bd3D + offset.yxy, texelSize.y ), dp ) +
-					texture2DCompare( shadowMap, cubeToUV( bd3D + offset.xxx, texelSize.y ), dp ) +
-					texture2DCompare( shadowMap, cubeToUV( bd3D + offset.yxx, texelSize.y ), dp )
-				) * ( 1.0 / 9.0 );
+			return texture2DCompare( shadowMap, cubeToUV( bd3D, texelSize.y ), dp );
 
-			#else // no percentage-closer filtering
-
-				shadow = texture2DCompare( shadowMap, cubeToUV( bd3D, texelSize.y ), dp );
-
-			#endif
-
-		}
-
-		return mix( 1.0, shadow, shadowIntensity );
+		#endif
 
 	}
 

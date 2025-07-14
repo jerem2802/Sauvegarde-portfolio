@@ -1,15 +1,13 @@
 import { WebGLLights } from './WebGLLights.js';
 
-function WebGLRenderState( extensions ) {
+function WebGLRenderState( extensions, capabilities ) {
 
-	const lights = new WebGLLights( extensions );
+	const lights = new WebGLLights( extensions, capabilities );
 
 	const lightsArray = [];
 	const shadowsArray = [];
 
-	function init( camera ) {
-
-		state.camera = camera;
+	function init() {
 
 		lightsArray.length = 0;
 		shadowsArray.length = 0;
@@ -28,9 +26,9 @@ function WebGLRenderState( extensions ) {
 
 	}
 
-	function setupLights() {
+	function setupLights( useLegacyLights ) {
 
-		lights.setup( lightsArray );
+		lights.setup( lightsArray, useLegacyLights );
 
 	}
 
@@ -44,11 +42,7 @@ function WebGLRenderState( extensions ) {
 		lightsArray: lightsArray,
 		shadowsArray: shadowsArray,
 
-		camera: null,
-
-		lights: lights,
-
-		transmissionRenderTarget: {}
+		lights: lights
 	};
 
 	return {
@@ -63,7 +57,7 @@ function WebGLRenderState( extensions ) {
 
 }
 
-function WebGLRenderStates( extensions ) {
+function WebGLRenderStates( extensions, capabilities ) {
 
 	let renderStates = new WeakMap();
 
@@ -74,14 +68,14 @@ function WebGLRenderStates( extensions ) {
 
 		if ( renderStateArray === undefined ) {
 
-			renderState = new WebGLRenderState( extensions );
+			renderState = new WebGLRenderState( extensions, capabilities );
 			renderStates.set( scene, [ renderState ] );
 
 		} else {
 
 			if ( renderCallDepth >= renderStateArray.length ) {
 
-				renderState = new WebGLRenderState( extensions );
+				renderState = new WebGLRenderState( extensions, capabilities );
 				renderStateArray.push( renderState );
 
 			} else {

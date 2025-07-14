@@ -10,22 +10,30 @@ type PlayerProps = {
 
 export default function Player({
   onEnterBuilding,
-  startPosition = [-0.27790872879685274, 0.1, 1.4401438935146833],
+  startPosition = [-0.2779, 0.1, 1.4401],
 }: PlayerProps) {
   const group = useRef<THREE.Group>(null);
-  const { scene, animations } = useGLTF("/player.glb");
-  const { actions } = useAnimations(animations, group);
+  const { scene, animations } = useGLTF("/models/walker1.glb");
+  const { actions, mixer } = useAnimations(animations, group);
+
+  const SCALE = 0.1;
+  const speed = 0.002;
+  const rotationSpeed = 0.03;
+
   const [keys, setKeys] = useState<{ [key: string]: boolean }>({});
   const [hasEntered, setHasEntered] = useState(false);
-  const SCALE = 0.001;
+  const [currentAction, setCurrentAction] = useState<string | null>(null);
+
+  const walkAnimName = animations[0]?.name ?? ""; // ← utilise automatiquement la première anim
 
   useEffect(() => {
     if (group.current) {
       group.current.position.set(...startPosition);
       group.current.scale.setScalar(SCALE);
     }
-  }, [scene, startPosition]);
+  }, [startPosition]);
 
+  // Keyboard listeners
   useEffect(() => {
     const down = (e: KeyboardEvent) => setKeys((k) => ({ ...k, [e.key]: true }));
     const up = (e: KeyboardEvent) => setKeys((k) => ({ ...k, [e.key]: false }));
@@ -37,14 +45,25 @@ export default function Player({
     };
   }, []);
 
+  // Handle animation
   useEffect(() => {
-    if (actions && animations.length > 0) {
-      const walk = animations[0].name;
-      if (keys["ArrowUp"]) actions[walk]?.play();
-      else actions[walk]?.stop();
-    }
-  }, [keys, actions, animations]);
+    if (!actions || !walkAnimName || !actions[walkAnimName]) return;
+    const shouldWalk = keys["ArrowUp"] || keys["ArrowDown"] || keys["ArrowLeft"] || keys["ArrowRight"];
 
+
+    if (shouldWalk && currentAction !== walkAnimName) {
+      actions[currentAction!]?.fadeOut(0.3);
+      actions[walkAnimName]?.reset().fadeIn(0.3).play();
+      setCurrentAction(walkAnimName);
+    }
+
+    if (!shouldWalk && currentAction) {
+      actions[currentAction]?.fadeOut(0.3);
+      setCurrentAction(null);
+    }
+  }, [keys, actions, currentAction, walkAnimName]);
+
+  // Movement
   const boundaries = {
     minX: -1.4,
     maxX: 1.4,
@@ -52,49 +71,32 @@ export default function Player({
     maxZ: 1.6,
   };
 
-  useFrame(() => {
-    if (!group.current) return;
+  useFrame((_, delta) => {
+    mixer?.update(delta);
 
-    const speed = 0.003;
-    const rotationSpeed = 0.03;
-    const pos = group.current.position.clone();
+    if (!group.current) return;
+    const prevPos = group.current.position.clone();
 
     if (keys["ArrowLeft"]) group.current.rotation.y += rotationSpeed;
     if (keys["ArrowRight"]) group.current.rotation.y -= rotationSpeed;
     if (keys["ArrowUp"]) group.current.translateZ(speed);
     if (keys["ArrowDown"]) group.current.translateZ(-speed);
+    console.log("position", group.current.position.toArray());
 
-    const newPos = group.current.position;
-    console.log("📍 Position actuelle :", newPos);
-
-    // Collision
+    const pos = group.current.position;
     if (
-      newPos.x < boundaries.minX || newPos.x > boundaries.maxX ||
-      newPos.z < boundaries.minZ || newPos.z > boundaries.maxZ
+      pos.x < boundaries.minX || pos.x > boundaries.maxX ||
+      pos.z < boundaries.minZ || pos.z > boundaries.maxZ
     ) {
-      group.current.position.copy(pos);
+      group.current.position.copy(prevPos);
     }
 
-    // Entrée bâtiment À propos
-    const inAboutZone =
-      newPos.x > -0.95 && newPos.x < -0.89 &&
-      newPos.z > 0.07 && newPos.z < 0.13;
+    const inAboutZone = pos.x > -0.95 && pos.x < -0.89 && pos.z > 0.07 && pos.z < 0.13;
+    const inProjectsZone = pos.x > -0.01 && pos.x < 0.07 && pos.z > 0.25 && pos.z < 0.3;
 
-    if (inAboutZone && !hasEntered) {
+    if ((inAboutZone || inProjectsZone) && !hasEntered) {
       setHasEntered(true);
-      console.log("🚪 Entrée détectée dans le bâtiment À propos !");
-      onEnterBuilding?.("about");
-    }
-
-    // Entrée bâtiment Projets
-    const inProjectsZone =
-      newPos.x > -0.01 && newPos.x < 0.07 &&
-      newPos.z > 0.25 && newPos.z < 0.3;
-
-    if (inProjectsZone && !hasEntered) {
-      setHasEntered(true);
-      console.log("🚪 Entrée détectée dans le bâtiment Projets !");
-      onEnterBuilding?.("projects");
+      onEnterBuilding?.(inAboutZone ? "about" : "projects");
     }
   });
 
@@ -104,3 +106,5 @@ export default function Player({
     </group>
   );
 }
+
+useGLTF.preload("/models/walker1.glb");
