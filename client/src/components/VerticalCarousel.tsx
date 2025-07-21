@@ -49,7 +49,7 @@ const projects = [
   {
     title: "Wildcom",
     description:
-      "Le réseau social\ndes développeurs.\nPartagez vos projets,\nvos idées, et collaborez !",
+      "Le réseau social\ndes développeurs.\nPartagez vos projets,\nvos idées, participez à des \névénements et collaborez !",
     texture: "/logo-wildcom.png",
     color: "#00FFFF",
   },

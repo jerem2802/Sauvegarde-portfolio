@@ -1,12 +1,14 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, useGLTF} from "@react-three/drei";
+import { OrbitControls as DreiOrbitControls, useGLTF, useProgress } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect } from "react";
 import Player from "./Player";
 import AnimatedFloatingText from "./AnimatedFloatingText";
 import { useNavigate } from "react-router-dom";
 import * as THREE from "three";
 import { Sky } from "@react-three/drei";
-
+import ScrollingBetaBanner from "./ScrollingBetaBanner";
+import { OrbitControls } from "three-stdlib";
+import LoaderCharacter from "./LoaderCharacter";
 
 const RadioModel = () => {
   const { scene } = useGLTF("/city.glb");
@@ -26,7 +28,6 @@ const RadioModel = () => {
 
   return <primitive object={scene} scale={0.8} />;
 };
-
 
 const InteriorRoom = () => {
   return (
@@ -51,11 +52,20 @@ const InteriorRoom = () => {
 
 export default function Radio3D() {
   const [inInterior, setInInterior] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const { progress } = useProgress();
   const navigate = useNavigate();
   const groupRef = useRef<THREE.Group>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const orbitRefExterior = useRef<any>(null);
-  const orbitRefInterior = useRef<any>(null);
+  const orbitRefExterior = useRef<OrbitControls>(null);
+  const orbitRefInterior = useRef<OrbitControls>(null);
+
+  useEffect(() => {
+    if (progress === 100) {
+      const timeout = setTimeout(() => setIsLoading(false), 1000);
+      return () => clearTimeout(timeout);
+    }
+  }, [progress]);
 
   useEffect(() => {
     if (!inInterior && orbitRefExterior.current) {
@@ -69,84 +79,84 @@ export default function Radio3D() {
   }, [inInterior]);
 
   const handleTransitionTo = (targetPath: string) => {
-  if (!groupRef.current || !overlayRef.current) return;
+    if (!groupRef.current || !overlayRef.current) return;
 
-  overlayRef.current.style.transition = "opacity 1s ease-in-out";
-  overlayRef.current.style.opacity = "1";
+    overlayRef.current.style.transition = "opacity 1s ";
+    overlayRef.current.style.opacity = "1";
 
-  let t = 1;
-  const interval = setInterval(() => {
-    t -= 0.05;
-    if (groupRef.current) {
-      groupRef.current.scale.set(t, t, t);
-    }
-    if (t <= 0.01) {
-      clearInterval(interval);
-      setTimeout(() => {
-        navigate(targetPath);       // ← ça va déclencher le changement de page
-        setInInterior(true);        // ✅ on le met APRES le navigate
-      }, 1000);
-    }
-  }, 16);
-};
- 
+    let t = 1;
+    const interval = setInterval(() => {
+      t -= 0.05;
+      if (groupRef.current) {
+        groupRef.current.scale.set(t, t, t);
+      }
+      if (t <= 0.01) {
+        clearInterval(interval);
+        setTimeout(() => {
+          navigate(targetPath);
+          setInInterior(true);
+        }, 1000);
+      }
+    }, 16);
+  };
+
   return (
-    <div className="relative w-full h-screen bg-black cur">
-     <Canvas camera={{ position: [0, 0.6, 2], fov: 100 }} className="bg-black">
-  <color attach="background" args={["#1a1a1a"]} />
-  <fog attach="fog" args={["#1a1a1a", 2, 15]} />
-  <ambientLight intensity={0.9} />
-  <directionalLight position={[5, 10, 5]} intensity={1} />
+    <div className="relative w-full h-screen bg-black">
+      {isLoading && <LoaderCharacter />}
 
-  <Sky
-    sunPosition={[500, 2, 100]}
-    turbidity={20}
-    rayleigh={1.5}
-    mieCoefficient={0.001}
-    mieDirectionalG={0.8}
-  />
+      <Canvas camera={{ position: [0, 0.6, 2], fov: 100 }} className="bg-black">
+        <color attach="background" args={["#1a1a1a"]} />
+        <fog attach="fog" args={["#1a1a1a", 2, 15]} />
+        <ambientLight intensity={0.9} />
+        <directionalLight position={[5, 10, 5]} intensity={1} />
 
-  <Suspense fallback={null}>
-    <group ref={groupRef}>
-      {!inInterior && (
-        <>
-          <AnimatedFloatingText />
-          <RadioModel />
-        
-        </>
-      )}
+        <Sky
+          sunPosition={[500, 2, 100]}
+          turbidity={20}
+          rayleigh={1.5}
+          mieCoefficient={0.001}
+          mieDirectionalG={0.8}
+        />
 
-      <Player
-        key={inInterior ? "inside" : "outside"}
-        startPosition={inInterior ? [0, 0.1, 0] : [-0.2779, 0.1, 1.44]}
-        onEnterBuilding={(building) => {
-          handleTransitionTo(building === "about" ? "/a-propos" : "/projets");
-        }}
-      />
+        <Suspense fallback={null}>
+          <group ref={groupRef}>
+            {!inInterior && (
+              <>
+                <AnimatedFloatingText />
+                <RadioModel />
+                <ScrollingBetaBanner />
+              </>
+            )}
 
-      {inInterior ? (
-        <>
-          <InteriorRoom />
-          <OrbitControls ref={orbitRefInterior} />
-        </>
-      ) : (
-        <OrbitControls ref={orbitRefExterior} />
-      )}
-    </group>
-  </Suspense>
+            <Player
+              key={inInterior ? "inside" : "outside"}
+              startPosition={inInterior ? [0, 0.1, 0] : [-0.2779, 0.1, 1.44]}
+              onEnterBuilding={(building) => {
+                handleTransitionTo(building === "about" ? "/a-propos" : "/projets");
+              }}
+            />
 
-  {/* Masque des portes */}
-  <mesh position={[0.03, 0.2, 0.27]}>
-    <planeGeometry args={[0.11, 0.26]} />
-    <meshStandardMaterial color="black" />
-    <mesh position={[-0.645, 0, -0.10]}>
-      <planeGeometry args={[0.13, 0.21]} />
-      <meshStandardMaterial color="black" />
-    </mesh>
-  </mesh>
- 
-  
-</Canvas>
+            {inInterior ? (
+              <>
+                <InteriorRoom />
+                <DreiOrbitControls ref={orbitRefInterior} />
+              </>
+            ) : (
+              <DreiOrbitControls ref={orbitRefExterior} />
+            )}
+          </group>
+        </Suspense>
+
+        {/* Masque des portes */}
+        <mesh position={[0.03, 0.2, 0.27]}>
+          <planeGeometry args={[0.11, 0.26]} />
+          <meshStandardMaterial color="black" />
+          <mesh position={[-0.645, 0, -0.10]}>
+            <planeGeometry args={[0.13, 0.21]} />
+            <meshStandardMaterial color="black" />
+          </mesh>
+        </mesh>
+      </Canvas>
 
       <div
         ref={overlayRef}
