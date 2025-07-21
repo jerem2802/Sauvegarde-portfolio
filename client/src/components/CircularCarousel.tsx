@@ -2,6 +2,7 @@ import { Text } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { MdPhoneAndroid } from "react-icons/md";
 
 export default function CircularInfoCarousel() {
   const radius = 10;
@@ -12,13 +13,11 @@ export default function CircularInfoCarousel() {
   const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
   const zoomGroupRef = useRef<THREE.Group>(new THREE.Group());
 
-  // 🟢 Initial camera setup
   useEffect(() => {
     camera.position.set(0, 1.5, 0);
     camera.lookAt(new THREE.Vector3(0, 1.5, -radius));
   }, [camera]);
 
-  // 📸 Load photo
   useEffect(() => {
     const loader = new THREE.TextureLoader();
     loader.load("/1000029319.jpg", (texture) => {
@@ -30,49 +29,49 @@ export default function CircularInfoCarousel() {
     });
   }, []);
 
-  // 🧲 Attach zoom group to camera
   useEffect(() => {
     const zoomGroup = zoomGroupRef.current;
     camera.add(zoomGroup);
-    scene.add(camera); // ensure camera stays in scene
+    scene.add(camera);
     return () => {
       camera.remove(zoomGroup);
     };
   }, [camera, scene]);
 
-  // 🌀 Rotation
- useFrame(() => {
-  if (carouselRef.current && focusedCardIndex === null) {
-    carouselRef.current.rotation.y += 0.0006;
-  }
+  useFrame(() => {
+    if (carouselRef.current && focusedCardIndex === null) {
+      carouselRef.current.rotation.y += 0.0006;
+    }
 
-  if (zoomGroupRef.current) {
-    const scaleTarget = focusedCardIndex !== null ? 1.8 : 0.001; // jamais 0
-    const positionTarget = focusedCardIndex !== null
-      ? new THREE.Vector3(0, 0, -1.5)
-      : new THREE.Vector3(0, 0, 0);
+    if (zoomGroupRef.current) {
+      const scaleTarget = focusedCardIndex !== null ? 1.8 : 0.001;
+      const positionTarget =
+        focusedCardIndex !== null
+          ? new THREE.Vector3(0, 0, -1.5)
+          : new THREE.Vector3(0, 0, 0);
 
-    zoomGroupRef.current.scale.lerp(
-      new THREE.Vector3(scaleTarget, scaleTarget, scaleTarget),
-      0.03 // encore plus lent
-    );
-    zoomGroupRef.current.position.lerp(positionTarget, 0.03);
-  }
-});
+      zoomGroupRef.current.scale.lerp(
+        new THREE.Vector3(scaleTarget, scaleTarget, scaleTarget),
+        0.03
+      );
+      zoomGroupRef.current.position.lerp(positionTarget, 0.03);
+    }
+  });
 
   const cards = [
-    { title: "À propos de moi", content: "Je suis Jérémy Tichané, créatif 3D..." },
+    {
+      title: "Je suis Jérémy.",
+      content:
+        "Développeur web et web mobile full-stack. \nFraichement diplomé du titre RNCP, je cherche une entreprise pour poursuivre ma formation en alternance. \nCurieux, créatif et déterminé, j’aime transformer les idées en expériences interactives qui ont du sens. \nAprès une formation intense en développement web full-stack, je continue d’apprendre chaque jour avec passion. \nJ’aime les interfaces qui racontent quelque chose, les projets qui ont une âme, et les équipes qui partagent cette même envie de créer, ensemble.",
+    },
     { title: "Crédits", content: "Modèles : PolyPizza, Musique : Pixabay..." },
-    { title: "Contact", content: "jeremy@example.com" },
+    { title: "Contact :", content:  "📨 Mail:  jeremytichane.dev@gmail.com \n📞 Phone 07.68.18.67.49 \n🔗 Linkedin :  www.linkedin.com/in/jérémy-tichané  " },
     { title: "Photo", image: "/1000029319.jpg" },
-     { title: "Softs Skills", content: "/icon-park-outline--github.png" },
-    
-    
+    { title: "Softs Skills", content: "" },
   ];
 
   return (
     <>
-      {/* Carousel rotatif */}
       <group ref={carouselRef}>
         {cards.map((card, i) => {
           if (i === focusedCardIndex) return null;
@@ -93,14 +92,21 @@ export default function CircularInfoCarousel() {
               rotation={[0, angleY, 0]}
               onClick={() => setFocusedCardIndex(i)}
             >
-              <CardContent card={card} photoTexture={photoTexture} photoRatio={photoRatio} />
+              <CardContent
+                card={card}
+                photoTexture={photoTexture}
+                photoRatio={photoRatio}
+              />
             </group>
           );
         })}
       </group>
 
-      {/* Carte zoomée, liée à la caméra */}
-      <group ref={zoomGroupRef} position={[0, 0, -1.5]} onClick={() => setFocusedCardIndex(null)}>
+      <group
+        ref={zoomGroupRef}
+        position={[0, 0, -1.5]}
+        onClick={() => setFocusedCardIndex(null)}
+      >
         {focusedCardIndex !== null && (
           <CardContent
             card={cards[focusedCardIndex]}
@@ -145,12 +151,18 @@ function CardContent({
         />
       </mesh>
       <Text
-        fontSize={0.1}
-        color="white"
+        fontSize={0.05}
+        color="black"
         maxWidth={1.8}
         anchorX="center"
         anchorY="middle"
         position={[0, 0, 0.01]}
+        outlineBlur={0.03}
+        outlineColor="gray"
+        outlineWidth={0.01}
+        
+        
+
       >
         {card.title + "\n" + (card.content || "")}
       </Text>
