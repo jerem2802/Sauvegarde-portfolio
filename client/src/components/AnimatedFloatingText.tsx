@@ -45,9 +45,9 @@ export default function AnimatedFloatingText() {
     <>
       <Text3D
         ref={ref1}
-        position={[-0.32, 1.1, 0.29]}
+        position={[-0.28, 1.1, 0.29]}
         font="/fonts/Roboto_Regular.json"
-        size={0.1}
+        size={0.08}
         height={0.01}
         curveSegments={6}
         bevelEnabled={true}
@@ -66,9 +66,9 @@ export default function AnimatedFloatingText() {
 
       <Text3D
         ref={ref2}
-        position={[0.21, 0.75, 0.17]}
+        position={[-0.75, 1.3, 0.17]}
         font="/fonts/Roboto_Regular.json"
-        size={0.06}
+        size={0.07}
         height={0.01}
         curveSegments={6}
         bevelEnabled={true}
@@ -87,9 +87,9 @@ export default function AnimatedFloatingText() {
 
       <Text3D
         ref={ref3}
-        position={[-1.08, 1.05, 0.1]}
+        position={[-1.04, 1.05, 0.1]}
         font="/fonts/Roboto_Regular.json"
-        size={0.05}
+        size={0.04}
         height={0.01}
         curveSegments={6}
         bevelEnabled={true}

@@ -78,27 +78,29 @@ export default function Radio3D() {
     }
   }, [inInterior]);
 
-  const handleTransitionTo = (targetPath: string) => {
-    if (!groupRef.current || !overlayRef.current) return;
+ const handleTransitionTo = (targetPath: string) => {
+  if (!groupRef.current || !overlayRef.current) return;
 
-    overlayRef.current.style.transition = "opacity 1s ";
-    overlayRef.current.style.opacity = "1";
+  setIsLoading(true); // 👈 Affiche le LoaderCharacter
+  overlayRef.current.style.transition = "opacity 1s ";
+  overlayRef.current.style.opacity = "1";
 
-    let t = 1;
-    const interval = setInterval(() => {
-      t -= 0.05;
-      if (groupRef.current) {
-        groupRef.current.scale.set(t, t, t);
-      }
-      if (t <= 0.01) {
-        clearInterval(interval);
-        setTimeout(() => {
-          navigate(targetPath);
-          setInInterior(true);
-        }, 1000);
-      }
-    }, 16);
-  };
+  let t = 1;
+  const interval = setInterval(() => {
+    t -= 0.05;
+    if (groupRef.current) {
+      groupRef.current.scale.set(t, t, t);
+    }
+    if (t <= 0.01) {
+      clearInterval(interval);
+      setTimeout(() => {
+        navigate(targetPath);
+        setInInterior(true);
+      }, 1000);
+    }
+  }, 16);
+};
+
 
   return (
     <div className="relative w-full h-screen bg-black">
