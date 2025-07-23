@@ -3,10 +3,13 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState, ReactNode } from "react";
 import * as THREE from "three";
 import NeonGlow from "./NeonGlow";
+import { FaLinkedin } from "react-icons/fa";
+import { IoIosPhonePortrait } from "react-icons/io";
+
 
 
 // Icônes
-import { TiHtml5 } from "react-icons/ti";
+import { TiHtml5, TiMail } from "react-icons/ti";
 import { FaCss3Alt, FaJs, FaReact, FaNodeJs, FaFigma, FaGithub } from "react-icons/fa";
 import { SiGit, SiMysql, SiThreedotjs, SiTypescript } from "react-icons/si";
 import { RiTailwindCssLine } from "react-icons/ri";
@@ -26,8 +29,27 @@ const skills: { name: string; icon: ReactNode }[] = [
   { name: "Git", icon: <SiGit size={4} color="#F05032" /> },
   { name: "GitHub", icon: <FaGithub size={4} color="#ffffff" /> },
   { name: "Three.js", icon: <SiThreedotjs size={4} color="#ffffff" /> },
+  
+  
    
 ];
+const contactItems: { label: string; value: string; icon: ReactNode }[] = [
+{ label: "Mail", value: "jeremytichane.dev@gmail.com", icon: <TiMail size={4} color="#00ffff" /> },
+{ label: "Phone", value: "07 68 18 67 49", icon: <IoIosPhonePortrait size={4} color="#00ffff" /> },
+{ label: "LinkedIn", value: "www.linkedin.com/in/jérémy-tichané", icon: <FaLinkedin size={4} color="#0A66C2" /> },
+{ label: "GitHub", value: "jerem2802", icon: <FaGithub size={4} color="#ffffff" />, },
+];
+
+import { FaCube, FaMusic } from "react-icons/fa";
+
+const creditItems: { label: string; icon: ReactNode }[] = [
+  { label: "PolyPizza", icon: <FaCube size={4} color="#00ffff" /> },
+  { label: "Mixamo", icon: <FaCube size={4} color="#00ffff" /> },
+  { label: "Pixabay (Musique)", icon: <FaMusic size={4} color="#ff8800" /> },
+  { label: "React Three Fiber", icon: <FaReact size={4} color="#61DBFB" /> },
+  { label: "Drei & React Icons", icon: <FaReact size={4} color="#61DBFB" /> },
+];
+
 
 export default function CircularInfoCarousel() {
   const radius = 10;
@@ -37,6 +59,7 @@ export default function CircularInfoCarousel() {
   const carouselRef = useRef<THREE.Group>(null);
   const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
   const zoomGroupRef = useRef<THREE.Group>(new THREE.Group());
+
 
   useEffect(() => {
     camera.position.set(0, 1.5, 0);
@@ -151,6 +174,9 @@ export default function CircularInfoCarousel() {
   );
 }
 
+
+
+// ---------------- CardContent ----------------
 // ---------------- CardContent ----------------
 function CardContent({
   card,
@@ -162,13 +188,14 @@ function CardContent({
   photoRatio?: number;
 }) {
   const isSkillsCard = card.title === "Skills";
+  const isContactCard = card.title === "Contact";
+  const isCreditsCard = card.title === "Crédits";
+
   const width = isSkillsCard ? 3.2 : 2.2;
   const height = isSkillsCard ? 2.0 : 1.3;
+  const spacing = 0.25;
 
-  // Gestion automatique de l'espacement vertical
-  const spacing = 0.25; 
- 
-
+  // Si c'est une image
   if (card.image && photoTexture) {
     return (
       <mesh>
@@ -180,9 +207,10 @@ function CardContent({
 
   return (
     <group>
+      {/* Glow autour de la carte */}
       <NeonGlow width={width + 0.5} height={height + 0.4} color="#00ffff" />
 
-      {/* Carte principale */}
+      {/* Fond de la carte */}
       <mesh>
         <boxGeometry args={[width, height, 0.08]} />
         <meshPhysicalMaterial
@@ -193,29 +221,32 @@ function CardContent({
           metalness={0.4}
           clearcoat={1}
           clearcoatRoughness={0.05}
-          reflectivity={0.9}
+          reflectivity={0.4}
         />
       </mesh>
 
       {/* Contour lumineux */}
       <lineSegments>
-        <edgesGeometry args={[new THREE.BoxGeometry(width, height, 0.08)]} />
+        <edgesGeometry args={[new THREE.BoxGeometry(width, height, 0.09)]} />
         <lineBasicMaterial color="#00ffff" linewidth={2} />
       </lineSegments>
 
       {/* Titre */}
       <Text
-        fontSize={0.4}
+        fontSize={0.5}
         color="#00ffff"
-        position={[0, height / 2 + 0.40, 0.06]}
+        position={[0, height / 2 + 0.4, 0.08]}
         anchorX="center"
         anchorY="bottom"
+        outlineWidth={0.03}
+        outlineColor="#001f1f"
       >
         {card.title}
       </Text>
 
       {/* Contenu */}
       {isSkillsCard ? (
+        // ----- Skills -----
         <group position={[-1, 0.5, 0.06]}>
           {Array.from({ length: 3 }).map((_, colIndex) => {
             const columnSkills = skills.slice(colIndex * 5, colIndex * 5 + 5);
@@ -223,12 +254,9 @@ function CardContent({
               <group key={colIndex} position={[colIndex * 1, 0, 0]}>
                 {columnSkills.map((skill, i) => (
                   <group key={i} position={[0, -i * spacing, 0]}>
-                    {/* Icône */}
-                    <Html position={[-0.20, 0, 0]} transform>
+                    <Html position={[-0.2, 0, 0]} transform>
                       {skill.icon}
                     </Html>
-
-                    {/* Texte */}
                     <Text
                       fontSize={0.06}
                       color="#ffffff"
@@ -243,7 +271,46 @@ function CardContent({
             );
           })}
         </group>
+      ) : isContactCard ? (
+        // ----- Contact -----
+        <group position={[-0.5, 0.4, 0.06]}>
+          {contactItems.map((item, i) => (
+            <group key={i} position={[0, -i * spacing, 0]}>
+              <Html position={[-0.25, 0, 0]} transform>
+                {item.icon}
+              </Html>
+              <Text
+                fontSize={0.06}
+                color="#ffffff"
+                anchorX="left"
+                position={[0.02, 0, 0]}
+              >
+                {item.value}
+              </Text>
+            </group>
+          ))}
+        </group>
+      ) : isCreditsCard ? (
+        // ----- Crédits -----
+        <group position={[-0.4, 0.5, 0.06]}>
+          {creditItems.map((item, i) => (
+            <group key={i} position={[0, -i * spacing, 0]}>
+              <Html position={[-0.25, 0, 0]} transform>
+                {item.icon}
+              </Html>
+              <Text
+                fontSize={0.06}
+                color="#ffffff"
+                anchorX="left"
+                position={[0.02, 0, 0]}
+              >
+                {item.label}
+              </Text>
+            </group>
+          ))}
+        </group>
       ) : (
+        // ----- Default -----
         <Text
           fontSize={0.05}
           color="#ffffff"
