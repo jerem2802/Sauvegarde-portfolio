@@ -4,7 +4,7 @@ import * as THREE from "three";
 import { useNavigate } from "react-router-dom";
 import FloatingParticles from "../components/FloatingParticles";
 import AmbientSound from "../components/AmbientSound";
-import { OrbitControls, Environment, useProgress } from "@react-three/drei";
+import { OrbitControls, useProgress } from "@react-three/drei";
 import CircularInfoCarousel from "../components/CircularCarousel";
 import LoaderCharacter from "../components/LoaderCharacter";
 
@@ -22,11 +22,11 @@ export default function APropos() {
         <ambientLight intensity={0.3} />
         <directionalLight position={[5, 5, 5]} intensity={0.5} />
         <pointLight position={[0, 3, 0]} intensity={2} distance={10} />
-        <Environment preset="forest" background={false} />
+       
 
         <Suspense fallback={null}>
           <group ref={groupRef}>
-            <FloatingParticles count={8000} />
+            <FloatingParticles count={2000} />
            
           </group>
 
@@ -47,3 +47,4 @@ export default function APropos() {
     </div>
   );
 }
+

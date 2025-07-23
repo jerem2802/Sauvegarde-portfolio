@@ -5,7 +5,7 @@ import * as THREE from "three";
 const generateAmbientPoints = (count: number) =>
   Array.from({ length: count }, () => ({
     position: new THREE.Vector3(
-      THREE.MathUtils.randFloatSpread(10),
+      THREE.MathUtils.randFloatSpread(15),
       THREE.MathUtils.randFloatSpread(4),
       THREE.MathUtils.randFloatSpread(10)
     ),

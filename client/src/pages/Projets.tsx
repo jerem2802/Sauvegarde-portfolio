@@ -35,26 +35,9 @@ export default function Projets() {
 
 
 
-  const handleBack = () => {
-    if (!groupRef.current || !overlayRef.current) return;
-
-    overlayRef.current.style.transition = "opacity 1s ease-in-out";
-    overlayRef.current.style.opacity = "1";
-
-    let t = 1;
-    const interval = setInterval(() => {
-      t -= 0.05;
-      if (groupRef.current) {
-        groupRef.current.scale.set(t, t, t);
-      }
-      if (t <= 0.01) {
-        clearInterval(interval);
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      }
-    }, 16);
-  };
+ const handleBack = () => {
+  navigate("/");
+};
 
   return (
     <div className="relative w-full j h-screen bg-black">
