@@ -4,7 +4,7 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 import * as THREE from "three";
 
 type PlayerProps = {
-  onEnterBuilding?: (building: "about" | "projects") => void;
+  onEnterBuilding?: (building: "about" | "projects" | "contact") => void;
   startPosition?: [number, number, number];
 };
 
@@ -93,11 +93,21 @@ export default function Player({
 
     const inAboutZone = pos.x > -0.95 && pos.x < -0.89 && pos.z > 0.07 && pos.z < 0.13;
     const inProjectsZone = pos.x > -0.01 && pos.x < 0.07 && pos.z > 0.25 && pos.z < 0.3;
+    const inContactZone =
+  pos.x > -0.64 && pos.x < -0.59 &&
+  pos.z > 0.18 && pos.z < 0.22;
 
-    if ((inAboutZone || inProjectsZone) && !hasEntered) {
-      setHasEntered(true);
-      onEnterBuilding?.(inAboutZone ? "about" : "projects");
-    }
+
+   if ((inAboutZone || inProjectsZone || inContactZone) && !hasEntered) {
+  setHasEntered(true);
+
+  if (inAboutZone) onEnterBuilding?.("about");
+else if (inProjectsZone) onEnterBuilding?.("projects");
+else if (inContactZone) onEnterBuilding?.("contact");
+
+  
+}
+
   });
 
   return (

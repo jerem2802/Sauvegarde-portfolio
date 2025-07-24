@@ -131,12 +131,15 @@ export default function Radio3D() {
             )}
 
             <Player
-              key={inInterior ? "inside" : "outside"}
-              startPosition={inInterior ? [0, 0.1, 0] : [-0.2779, 0.1, 1.44]}
-              onEnterBuilding={(building) => {
-                handleTransitionTo(building === "about" ? "/a-propos" : "/projets");
-              }}
-            />
+  key={inInterior ? "inside" : "outside"}
+  startPosition={inInterior ? [0, 0.1, 0] : [-0.2779, 0.1, 1.44]}
+  onEnterBuilding={(building) => {
+    if (building === "about") handleTransitionTo("/a-propos");
+    else if (building === "projects") handleTransitionTo("/projets");
+    else if (building === "contact") handleTransitionTo("/contact");
+  }}
+/>
+
 
             {inInterior ? (
               <>

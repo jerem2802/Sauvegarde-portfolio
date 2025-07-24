@@ -5,10 +5,6 @@ import * as THREE from "three";
 import NeonGlow from "./NeonGlow";
 import { FaLinkedin } from "react-icons/fa";
 import { IoIosPhonePortrait } from "react-icons/io";
-
-
-
-// Icônes
 import { TiHtml5, TiMail } from "react-icons/ti";
 import { FaCss3Alt, FaJs, FaReact, FaNodeJs, FaFigma, FaGithub } from "react-icons/fa";
 import { SiGit, SiMysql, SiThreedotjs, SiTypescript } from "react-icons/si";
@@ -52,7 +48,7 @@ const creditItems: { label: string; icon: ReactNode }[] = [
 
 
 export default function CircularInfoCarousel() {
-  const radius = 10;
+  const radius = 6;
   const { camera, scene } = useThree();
   const [photoTexture, setPhotoTexture] = useState<THREE.Texture | null>(null);
   const [photoRatio, setPhotoRatio] = useState(1);
@@ -176,8 +172,6 @@ export default function CircularInfoCarousel() {
 
 
 
-// ---------------- CardContent ----------------
-// ---------------- CardContent ----------------
 function CardContent({
   card,
   photoTexture,

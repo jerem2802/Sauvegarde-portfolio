@@ -106,11 +106,26 @@ export default function AnimatedFloatingText() {
         />
       </Text3D>
 
-      <Billboard position={[4, 3, -3]}>
-        <Text fontSize={0.5} color="white" anchorX="center" anchorY="middle">
-          Bienvenue
-        </Text>
-      </Billboard>
+          <Text3D
+        ref={ref3}
+        position={[0.40, 1.05, 0.9]}
+        font="/fonts/Roboto_Regular.json"
+        size={0.04}
+        height={0.01}
+        curveSegments={6}
+        bevelEnabled={true}
+        bevelThickness={0.002}
+        bevelSize={0.001}
+      >
+    Bienvenue
+        <meshStandardMaterial
+          color="#ffffff"
+          emissive="#1f1f1f"
+          emissiveIntensity={8}
+          metalness={0.5}
+          roughness={0.3}
+        />
+      </Text3D>
     </>
   );
 }
