@@ -22,20 +22,23 @@ export default function LampPost({ position, isDarkMode }: LampPostProps) {
 
   return (
     <group position={position}>
-      {/* 💡 Ampoule visible en 3D */}
-      <mesh position={[0, 2.2, 0]}>
-        <sphereGeometry args={[0.06, 16, 16]} />
-        <meshStandardMaterial
-          emissive={"#ffffaa"}
-          emissiveIntensity={isDarkMode ? 1 : 0}
-          color={"#000"}
+      {/* 💡 Pastille lumineuse plate à l’intérieur de l’abat-jour */}
+      <mesh position={[0, 2.22, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.07, 32]} />
+        <meshBasicMaterial
+          color={"#ffffcc"}
+          emissive={"#ffffcc"}
+          emissiveIntensity={isDarkMode ? 3.5 : 0}
+          transparent
+          opacity={isDarkMode ? 1 : 0}
+          side={THREE.DoubleSide}
         />
       </mesh>
 
-      {/* 💡 Source de lumière */}
+      {/* 💡 Lumière réelle */}
       <pointLight
         ref={lightRef}
-        position={[0, 2.2, 0]}
+        position={[0, 2.22, 0]}
         intensity={0}
         distance={5}
         color={"#ffffcc"}
