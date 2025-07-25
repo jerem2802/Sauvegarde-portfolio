@@ -113,9 +113,9 @@ export default function Radio3D() {
         <directionalLight position={[5, 10, 5]} intensity={1} />
 
         <Sky
-          sunPosition={[500, 2, 100]}
+          sunPosition={[9000, -4, -9000]}
           turbidity={20}
-          rayleigh={1.5}
+          rayleigh={2}
           mieCoefficient={0.001}
           mieDirectionalG={0.8}
         />

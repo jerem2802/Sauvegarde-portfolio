@@ -63,6 +63,30 @@ export default function Player({
     }
   }, [keys, actions, currentAction, walkAnimName]);
 
+  useEffect(() => {
+  const down = (e: KeyboardEvent) => {
+    // Empêche le scroll de la page pour certaines touches
+    if (["ArrowDown", "ArrowUp", "Space", "PageDown", "PageUp"].includes(e.key)) {
+      e.preventDefault();
+    }
+
+    setKeys((k) => ({ ...k, [e.key]: true }));
+  };
+
+  const up = (e: KeyboardEvent) => {
+    setKeys((k) => ({ ...k, [e.key]: false }));
+  };
+
+  window.addEventListener("keydown", down, { passive: false });
+  window.addEventListener("keyup", up);
+
+  return () => {
+    window.removeEventListener("keydown", down);
+    window.removeEventListener("keyup", up);
+  };
+}, []);
+
+
   // Movement
   const boundaries = {
     minX: -1.4,
