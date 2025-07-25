@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import ISSModel from "../components/IssModel";
 import VerticalProjectCarousel from "../components/VerticalCarousel";
 import { useEffect } from "react";
+import KeyboardInstructions from "../components/KeyboardInstructions";
 
 
 export default function Projets() {
@@ -56,6 +57,7 @@ export default function Projets() {
 
       <VerticalProjectCarousel />
       <OrbitControls />
+      <KeyboardInstructions />
     </group>
 
     
@@ -63,36 +65,21 @@ export default function Projets() {
   </Suspense>
 </Canvas>
 
-
-      {/* UI - Contrôles clavier */}
-      <div className="absolute top-4 right-4 text-cyan-300 text-sm text-right z-20 font-mono space-y-1">
-        <div>
-          <span className="bg-cyan-500 text-black px-1 rounded">↑</span> /{" "}
-          <span className="bg-cyan-500 text-black px-1 rounded">↓</span> : Naviguer
-        </div>
-        <div>
-          <span className="bg-cyan-500 text-black px-1 rounded">Entrée</span> : Valider
-        </div>
-        <div>
-          <span className="bg-cyan-500 text-black px-1 rounded">Échap</span> : Quitter
-        </div>
-      </div>
-
-      {/* Overlay noir de transition */}
-      <div
+           <div
         ref={overlayRef}
         className="pointer-events-none absolute top-0 left-0 w-full h-full bg-black opacity-0 z-50"
       />
 
-      {/* Texte d’intro */}
+      
       <div className="absolute top-4 left-4 text-white z-10">
                
-        <button
-          className="mt-4 px-4 py-2 bg-blue-400 text-black rounded font-bold hover:bg-blue-500 transition-colors "
-          onClick={handleBack}
-        >
-          Retour 
-        </button>
+       <button
+  className="absolute top-4 left-4 px-4 py-2 text-cyan-400 border border-cyan-400 rounded-xl font-orbitron text-sm shadow-[0_0_10px_#00ffff88] backdrop-blur bg-black/30 hover:scale-105 transition-transform"
+  onClick={handleBack}
+>
+  Retour
+</button>
+
       </div>
     </div>
   );

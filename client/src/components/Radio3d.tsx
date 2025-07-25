@@ -1,14 +1,21 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls as DreiOrbitControls, useGLTF, useProgress } from "@react-three/drei";
+import {
+  OrbitControls as DreiOrbitControls,
+  useGLTF,
+  useProgress,
+  Sky,
+} from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect } from "react";
 import Player from "./Player";
 import AnimatedFloatingText from "./AnimatedFloatingText";
 import { useNavigate } from "react-router-dom";
 import * as THREE from "three";
-import { Sky } from "@react-three/drei";
 import ScrollingBetaBanner from "./ScrollingBetaBanner";
 import { OrbitControls } from "three-stdlib";
 import LoaderCharacter from "./LoaderCharacter";
+import StylishBulbToggle from "./StylishBulbToggle"; // ✅ Seule source de toggle maintenant
+import LampPost from "./LampPost";
+import LightStarSky from "./LightStarSky";
 
 const RadioModel = () => {
   const { scene } = useGLTF("/city.glb");
@@ -29,30 +36,29 @@ const RadioModel = () => {
   return <primitive object={scene} scale={0.8} />;
 };
 
-const InteriorRoom = () => {
-  return (
-    <group>
-      <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[10, 10]} />
-        <meshStandardMaterial color="#444" />
+const InteriorRoom = () => (
+  <group>
+    <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[10, 10]} />
+      <meshStandardMaterial color="#444" />
+    </mesh>
+    <mesh position={[0, 2, -5]}>
+      <boxGeometry args={[10, 4, 0.1]} />
+      <meshStandardMaterial color="#999" />
+    </mesh>
+    {[...Array(3)].map((_, i) => (
+      <mesh key={i} position={[-3 + i * 3, 2, -4.95]}>
+        <planeGeometry args={[1.5, 1.5]} />
+        <meshStandardMaterial color="#222" />
       </mesh>
-      <mesh position={[0, 2, -5]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color="#999" />
-      </mesh>
-      {[...Array(3)].map((_, i) => (
-        <mesh key={i} position={[-3 + i * 3, 2, -4.95]}>
-          <planeGeometry args={[1.5, 1.5]} />
-          <meshStandardMaterial color="#222" />
-        </mesh>
-      ))}
-    </group>
-  );
-};
+    ))}
+  </group>
+);
 
 export default function Radio3D() {
   const [inInterior, setInInterior] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const { progress } = useProgress();
   const navigate = useNavigate();
   const groupRef = useRef<THREE.Group>(null);
@@ -68,57 +74,62 @@ export default function Radio3D() {
   }, [progress]);
 
   useEffect(() => {
-    if (!inInterior && orbitRefExterior.current) {
-      orbitRefExterior.current.target.set(0, 1.5, -4);
-      orbitRefExterior.current.update();
-    }
-    if (inInterior && orbitRefInterior.current) {
-      orbitRefInterior.current.target.set(0, 1.5, -2);
-      orbitRefInterior.current.update();
+    const ref = inInterior ? orbitRefInterior : orbitRefExterior;
+    if (ref.current) {
+      ref.current.target.set(0, 1.5, inInterior ? -2 : -4);
+      ref.current.update();
     }
   }, [inInterior]);
 
- const handleTransitionTo = (targetPath: string) => {
-  if (!groupRef.current || !overlayRef.current) return;
+  const handleTransitionTo = (targetPath: string) => {
+    if (!groupRef.current || !overlayRef.current) return;
 
-  setIsLoading(true); // 👈 Affiche le LoaderCharacter
-  overlayRef.current.style.transition = "opacity 1s ";
-  overlayRef.current.style.opacity = "1";
+    setIsLoading(true);
+    overlayRef.current.style.transition = "opacity 1s ";
+    overlayRef.current.style.opacity = "1";
 
-  let t = 1;
-  const interval = setInterval(() => {
-    t -= 0.05;
-    if (groupRef.current) {
-      groupRef.current.scale.set(t, t, t);
-    }
-    if (t <= 0.01) {
-      clearInterval(interval);
-      setTimeout(() => {
-        navigate(targetPath);
-        setInInterior(true);
-      }, 1000);
-    }
-  }, 16);
-};
-
+    let t = 1;
+    const interval = setInterval(() => {
+      t -= 0.05;
+      if (groupRef.current) {
+        groupRef.current.scale.set(t, t, t);
+      }
+      if (t <= 0.01) {
+        clearInterval(interval);
+        setTimeout(() => {
+          navigate(targetPath);
+          setInInterior(true);
+        }, 1000);
+      }
+    }, 16);
+  };
 
   return (
     <div className="relative w-full h-screen bg-black">
       {isLoading && <LoaderCharacter />}
 
       <Canvas camera={{ position: [0, 0.6, 2], fov: 100 }} className="bg-black">
-        <color attach="background" args={["#1a1a1a"]} />
-        <fog attach="fog" args={["#1a1a1a", 2, 15]} />
-        <ambientLight intensity={0.9} />
+        <color attach="background" args={[isDarkMode ? "#000000" : "#1a1a1a"]} />
+        <fog attach="fog" args={[isDarkMode ? "#000000" : "#1a1a1a", 2, 15]} />
+        <ambientLight intensity={isDarkMode ? 0.5 : 0.9} />
         <directionalLight position={[5, 10, 5]} intensity={1} />
 
-        <Sky
-          sunPosition={[9000, -4, -9000]}
-          turbidity={20}
-          rayleigh={2}
-          mieCoefficient={0.001}
-          mieDirectionalG={0.8}
-        />
+        {/* 🌙 Étoiles en mode sombre */}
+        {isDarkMode && <LightStarSky />}
+
+        {/* ☀️ Ciel en mode jour */}
+        {!isDarkMode && (
+          <Sky
+            sunPosition={[9000, -4, -9000]}
+            turbidity={20}
+            rayleigh={2}
+            mieCoefficient={0.001}
+            mieDirectionalG={0.8}
+          />
+        )}
+
+        {/* 💡 Ampoule toggle */}
+        <StylishBulbToggle onToggle={setIsDarkMode} />
 
         <Suspense fallback={null}>
           <group ref={groupRef}>
@@ -131,15 +142,14 @@ export default function Radio3D() {
             )}
 
             <Player
-  key={inInterior ? "inside" : "outside"}
-  startPosition={inInterior ? [0, 0.1, 0] : [-0.2779, 0.1, 1.44]}
-  onEnterBuilding={(building) => {
-    if (building === "about") handleTransitionTo("/a-propos");
-    else if (building === "projects") handleTransitionTo("/projets");
-    else if (building === "contact") handleTransitionTo("/contact");
-  }}
-/>
-
+              key={inInterior ? "inside" : "outside"}
+              startPosition={inInterior ? [0, 0.1, 0] : [-0.2779, 0.1, 1.44]}
+              onEnterBuilding={(building) => {
+                if (building === "about") handleTransitionTo("/a-propos");
+                else if (building === "projects") handleTransitionTo("/projets");
+                else if (building === "contact") handleTransitionTo("/contact");
+              }}
+            />
 
             {inInterior ? (
               <>
@@ -152,7 +162,7 @@ export default function Radio3D() {
           </group>
         </Suspense>
 
-        {/* Masque des portes */}
+        {/* 🕳 Masque des portes */}
         <mesh position={[0.03, 0.2, 0.27]}>
           <planeGeometry args={[0.11, 0.26]} />
           <meshStandardMaterial color="black" />
@@ -161,6 +171,12 @@ export default function Radio3D() {
             <meshStandardMaterial color="black" />
           </mesh>
         </mesh>
+
+        {/* 🛣️ Lampadaires */}
+        <LampPost position={[-1.13, -1.63, 1.15]} isDarkMode={isDarkMode} />
+        <LampPost position={[-1.14, -1.63, 0.61]} isDarkMode={isDarkMode} />
+        <LampPost position={[0.68, -1.63, 0.61]} isDarkMode={isDarkMode} />
+        <LampPost position={[0.68, -1.63, 1.12]} isDarkMode={isDarkMode} />
       </Canvas>
 
       <div
