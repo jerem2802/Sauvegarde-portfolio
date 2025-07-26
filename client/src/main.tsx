@@ -4,9 +4,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Home from "./pages/Home";
-import AdminLogin from "./pages/LoginAdmin";
-import AdminEdit from "./pages/EditAdmin";
-import AddProject from "./pages/AddProject";
+
+
+
 import APropos from "./pages/APropos";
 import Projets from "./pages/Projets";
 import Contact from "./pages/Contact";
@@ -15,7 +15,7 @@ import Contact from "./pages/Contact";
 const router = createBrowserRouter([
 	{
 		path: "/",
-		element: <App />, // App devient le parent de toutes les routes
+		element: <App />,
 		children: [
 			{
 				path: "home",
@@ -34,20 +34,9 @@ const router = createBrowserRouter([
 				path: "contact",
 				element: <Contact />,
 			},
-			{
-				path: "admin",
-				element: <AdminLogin />,
-			},
-			{
-				path: "admin/edit",
-				element: <AdminEdit />,
-			},
-			{
-				path: "admin/add",
-				element: <AddProject />,
-			},
-			{
-				index: true, // Redirige "/" vers "/home" par défaut
+		
+							{
+				index: true, 
 				element: <Home />,
 			},
 		],

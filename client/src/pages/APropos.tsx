@@ -36,7 +36,7 @@ export default function APropos() {
         </Suspense>
       </Canvas>
 
-      <AmbientSound />
+<AmbientSound url="/audio/ambient.mp3" initialVolume={0.02} />
 
       <button
         onClick={() => navigate("/home")}

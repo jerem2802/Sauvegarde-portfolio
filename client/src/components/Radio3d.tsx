@@ -6,6 +6,7 @@ import {
   Sky,
 } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect } from "react";
+import AmbientSound from "./AmbientSound";
 import Player from "./Player";
 import AnimatedFloatingText from "./AnimatedFloatingText";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +14,7 @@ import * as THREE from "three";
 import ScrollingBetaBanner from "./ScrollingBetaBanner";
 import { OrbitControls } from "three-stdlib";
 import LoaderCharacter from "./LoaderCharacter";
-import StylishBulbToggle from "./StylishBulbToggle"; // ✅ Seule source de toggle maintenant
+import StylishBulbToggle from "./StylishBulbToggle";
 import LampPost from "./LampPost";
 import LightStarSky from "./LightStarSky";
 
@@ -85,7 +86,7 @@ export default function Radio3D() {
     if (!groupRef.current || !overlayRef.current) return;
 
     setIsLoading(true);
-    overlayRef.current.style.transition = "opacity 1s ";
+    overlayRef.current.style.transition = "opacity 1s";
     overlayRef.current.style.opacity = "1";
 
     let t = 1;
@@ -108,16 +109,24 @@ export default function Radio3D() {
     <div className="relative w-full h-screen bg-black">
       {isLoading && <LoaderCharacter />}
 
+      {!inInterior && (
+        <AmbientSound
+          url={
+            isDarkMode
+              ? "/audio/night-cricket-ambience-22484.mp3"
+              : "/audio/garden-sunny-day-54490.mp3"
+          }
+          initialVolume={isDarkMode ? 0.1 : 0.1}
+        />
+      )}
+
       <Canvas camera={{ position: [0, 0.6, 2], fov: 100 }} className="bg-black">
         <color attach="background" args={[isDarkMode ? "#000000" : "#1a1a1a"]} />
         <fog attach="fog" args={[isDarkMode ? "#000000" : "#1a1a1a", 2, 15]} />
         <ambientLight intensity={isDarkMode ? 0.5 : 0.9} />
         <directionalLight position={[5, 10, 5]} intensity={1} />
 
-        {/* 🌙 Étoiles en mode sombre */}
         {isDarkMode && <LightStarSky />}
-
-        {/* ☀️ Ciel en mode jour */}
         {!isDarkMode && (
           <Sky
             sunPosition={[9000, -4, -9000]}
@@ -128,10 +137,9 @@ export default function Radio3D() {
           />
         )}
 
-        {/* 💡 Ampoule toggle */}
         <StylishBulbToggle onToggle={setIsDarkMode} />
+        <ScrollingBetaBanner />
 
-            <ScrollingBetaBanner />
         <Suspense fallback={null}>
           <group ref={groupRef}>
             {!inInterior && (
@@ -162,7 +170,7 @@ export default function Radio3D() {
           </group>
         </Suspense>
 
-        {/* 🕳 Masque des portes */}
+        {/* Portes masquées */}
         <mesh position={[0.03, 0.2, 0.27]}>
           <planeGeometry args={[0.11, 0.26]} />
           <meshStandardMaterial color="black" />
@@ -172,7 +180,7 @@ export default function Radio3D() {
           </mesh>
         </mesh>
 
-        {/* 🛣️ Lampadaires */}
+        {/* Lampadaires */}
         <LampPost position={[-1.13, -1.63, 1.15]} isDarkMode={isDarkMode} />
         <LampPost position={[-1.14, -1.63, 0.61]} isDarkMode={isDarkMode} />
         <LampPost position={[0.68, -1.63, 0.61]} isDarkMode={isDarkMode} />

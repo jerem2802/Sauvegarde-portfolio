@@ -6,11 +6,11 @@ export default function LightStarSky() {
   const pointsRef = useRef<THREE.Points>(null);
 
   const geometry = useMemo(() => {
-    const starCount = 1000;
+    const starCount = 2000;
     const positions = new Float32Array(starCount * 3);
 
     for (let i = 0; i < positions.length; i++) {
-      positions[i] = (Math.random() - 0.5) * 40; // sphère large
+      positions[i] = (Math.random() - 0.5) * 35; // sphère large
     }
 
     const geo = new THREE.BufferGeometry();
