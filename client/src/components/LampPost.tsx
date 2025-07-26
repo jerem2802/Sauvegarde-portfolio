@@ -25,7 +25,7 @@ export default function LampPost({ position, isDarkMode }: LampPostProps) {
       {/* 💡 Pastille lumineuse plate à l’intérieur de l’abat-jour */}
       <mesh position={[0, 2.22, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[0.07, 32]} />
-        <meshBasicMaterial
+        <meshStandardMaterial
           color={"#ffffcc"}
           emissive={"#ffffcc"}
           emissiveIntensity={isDarkMode ? 3.5 : 0}
@@ -40,7 +40,7 @@ export default function LampPost({ position, isDarkMode }: LampPostProps) {
         ref={lightRef}
         position={[0, 2.22, 0]}
         intensity={0}
-        distance={5}
+        distance={2}
         color={"#ffffcc"}
         castShadow
       />

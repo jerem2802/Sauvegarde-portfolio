@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-export default function ScrollingBetaBanner({ speed = 0.001 }: { speed?: number }) {
+export default function ScrollingBetaBanner({ speed = 0.0006 }: { speed?: number }) {
   const textRef = useRef<THREE.Mesh>(null);
 
   const startX = 2.1;
@@ -24,7 +24,7 @@ export default function ScrollingBetaBanner({ speed = 0.001 }: { speed?: number 
     <Text
       ref={textRef}
       position={[startX, y, z]}
-      fontSize={0.08}
+      fontSize={0.06}
       color="orange"
       anchorX="center"
       anchorY="middle"

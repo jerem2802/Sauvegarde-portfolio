@@ -131,13 +131,13 @@ export default function Radio3D() {
         {/* 💡 Ampoule toggle */}
         <StylishBulbToggle onToggle={setIsDarkMode} />
 
+            <ScrollingBetaBanner />
         <Suspense fallback={null}>
           <group ref={groupRef}>
             {!inInterior && (
               <>
                 <AnimatedFloatingText />
                 <RadioModel />
-                <ScrollingBetaBanner />
               </>
             )}
 
