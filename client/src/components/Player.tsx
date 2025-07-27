@@ -26,12 +26,15 @@ export default function Player({
 
   const walkAnimName = animations[0]?.name ?? ""; // ← utilise automatiquement la première anim
 
-  useEffect(() => {
-    if (group.current) {
-      group.current.position.set(...startPosition);
-      group.current.scale.setScalar(SCALE);
-    }
-  }, [startPosition]);
+const hasInitialized = useRef(false);
+
+useEffect(() => {
+  if (!hasInitialized.current && group.current) {
+    group.current.position.set(...startPosition);
+    group.current.scale.setScalar(SCALE);
+    hasInitialized.current = true;
+  }
+}, []);
 
   // Keyboard listeners
   useEffect(() => {

@@ -9,16 +9,16 @@ export default function Contact() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative w-full h-screen bg-black">
-      {/* ✅ Bouton retour positionné comme dans Projets.tsx */}
-      <div className="absolute top-4 left-4 z-10">
-        <button
-          className="px-4 py-2 text-cyan-400 border border-cyan-400 rounded-xl font-orbitron text-sm shadow-[0_0_10px_#00ffff88] backdrop-blur bg-black/30 hover:scale-105 transition-transform"
-          onClick={() => navigate("/")}
-        >
-          Retour
-        </button>
-      </div>
+     <div className="relative w-full h-screen bg-black">
+    {/* 🔁 Bouton identique à Projets.tsx */}
+    <div className="absolute top-4 left-4 text-white z-10">
+      <button
+        className="absolute top-4 left-4 px-4 py-2 text-cyan-400 border border-cyan-400 rounded-xl font-orbitron text-sm shadow-[0_0_10px_#00ffff88] backdrop-blur bg-black/30 hover:bg-cyan-500 hover:text-black transition"
+        onClick={() => navigate("/home")}
+      >
+        Retour
+      </button>
+    </div>
 
       <Canvas
         camera={{ position: [0, 0, 5], fov: 60 }}
