@@ -9,7 +9,7 @@ const contactItems = [
     icon: <GrLocationPin size={9} color="#550B0B" />,
     text: "Bordeaux",
     href: "https://www.bordeaux-metropole.fr/",
-    offsetX: -0.82, // Ajustement horizontal
+    offsetX: -0.82, 
   },
   {
     icon: <FaEnvelope size={8} color="#00ffff" />,
@@ -20,28 +20,28 @@ const contactItems = [
     icon: <FaPhone size={8} color="#00ffff" />,
     text: "07 68 18 67 49",
     href: "tel:0768186749",
-    offsetX: -0.63, // Ajustement horizontal
+    offsetX: -0.63, 
   },
   {
     icon: <FaLinkedin size={8} color="#0a66c2" />,
     text: "linkedin",
     href: "https://linkedin.com/in/jérémy-tichané",
-     offsetX: -0.88, // Ajustement horizontal
+     offsetX: -0.88, 
   },
   {
     icon: <FaGithub size={8} color="#00ffff" />,
     text: "Mon GitHub",
     href: "https://github.com/jerem2802",
-    offsetX: -0.72, // Ajustement horizontal
+    offsetX: -0.72, 
   },
 ];
 
-const spacing = 0.5; // Espace entre les items
+const spacing = 0.5; // ESPACEMENT VERTICAL ENTRE LES ÉLÉMENTS !
 
 export default function ContactCard() {
   return (
     <group position={[0, 0.6, 0]}>
-      {/* Fond */}
+ 
       <mesh>
         <planeGeometry args={[4, 3]} />
         <meshStandardMaterial color="#111" transparent opacity={0.85} />
@@ -66,20 +66,20 @@ export default function ContactCard() {
 
 
 
-      {/* Infos de contact */}
+     
       {contactItems.map((item, index) => {
         const y = 0.5 - index * spacing;
         const textOffsetX = 0.2 + (item.offsetX || 0);
         return (
           <group key={index} position={[0, y, 0.01]}>
-            {/* Icône */}
+           
             <Html position={[-1.5, 0, 0]} transform>
               <div style={{ display: "flex", alignItems: "center" }}>
                 {item.icon}
               </div>
             </Html>
 
-            {/* Lien cliquable */}
+           
             <Html position={[textOffsetX, 0.1, 0]} transform>
               <a
                 href={item.href}
@@ -100,7 +100,7 @@ export default function ContactCard() {
         );
       })}
 
-      {/* Bouton de téléchargement */}
+      {/* BOUTON DE TELECHARGEMENT */}
       <group position={[0, -2.8, 0]} scale={0.5}>
         <Html center transform>
           <div

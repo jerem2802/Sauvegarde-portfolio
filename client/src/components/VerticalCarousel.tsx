@@ -5,7 +5,7 @@ import { Text3D } from "@react-three/drei";
 import { useNavigate } from "react-router-dom";
 import { TextureLoader } from "three";
 
-// === CONFIGURATION DES CARTES ===
+
 const cardSettings: Record<
   string,
   {
@@ -118,7 +118,7 @@ export default function VerticalProjectCarousel() {
 
         return (
           <group key={i}>
-            {/* Carte */}
+           
             <mesh>
               <planeGeometry args={[3, 1]} />
               <meshBasicMaterial
@@ -128,7 +128,7 @@ export default function VerticalProjectCarousel() {
               />
             </mesh>
 
-            {/* Titre */}
+            {/* TITRE */}
             <Text3D
               key={project.title}
               position={titlePosition}
@@ -149,7 +149,7 @@ export default function VerticalProjectCarousel() {
               />
             </Text3D>
 
-            {/* Logo + Description + Indicateur */}
+            {/* LOGO + DESCRIPTION + INDICATEUR */}
             {isSelected && (
               <>
                 {/* Logo */}
@@ -158,7 +158,7 @@ export default function VerticalProjectCarousel() {
                   <meshBasicMaterial map={textures[i]} transparent />
                 </mesh>
 
-                {/* Description */}
+                {/* DESCRIPTION */}
                 <mesh position={[1.8, 0.2, 0]} rotation={[0, 0, 0]}>
                   <Text3D
                     font="/fonts/Orbitron_Regular.json"
@@ -176,7 +176,7 @@ export default function VerticalProjectCarousel() {
                   </Text3D>
                 </mesh>
 
-                {/* Indicateur d’action si cliquable */}
+                {/* INDICATEUR D’ACTION SI CLIQUABLE */}
                 {project.url && (
                   <mesh position={[0, -0.7, 0]}>
                     <Text3D

@@ -170,7 +170,7 @@ export default function Radio3D() {
           </group>
         </Suspense>
 
-        {/* Portes masquées */}
+        {/* PORTES MASQUÉES */}
         <mesh position={[0.03, 0.2, 0.27]}>
           <planeGeometry args={[0.11, 0.26]} />
           <meshStandardMaterial color="black" />
@@ -180,7 +180,7 @@ export default function Radio3D() {
           </mesh>
         </mesh>
 
-        {/* Lampadaires */}
+        {/* LAMPADAIRES */}
         <LampPost position={[-1.13, -1.63, 1.15]} isDarkMode={isDarkMode} />
         <LampPost position={[-1.14, -1.63, 0.61]} isDarkMode={isDarkMode} />
         <LampPost position={[0.68, -1.63, 0.61]} isDarkMode={isDarkMode} />

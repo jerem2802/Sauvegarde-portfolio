@@ -10,7 +10,7 @@ export default function Contact() {
 
   return (
      <div className="relative w-full h-screen bg-black">
-    {/* 🔁 Bouton identique à Projets.tsx */}
+   
     <div className="absolute top-4 left-4 text-white z-10">
       <button
         className="absolute top-4 left-4 px-4 py-2 text-cyan-400 border border-cyan-400 rounded-xl font-orbitron text-sm shadow-[0_0_10px_#00ffff88] backdrop-blur bg-black/30 hover:bg-cyan-500 hover:text-black transition"
@@ -32,14 +32,14 @@ export default function Contact() {
           <ContactCard />
         </Suspense>
 
-        {/* Glow autour de la carte */}
+        {/* GLOW */}
         <group position={[0, 0, 0.06]}>
           <mesh position={[0, 0, -0.01]}>
             <planeGeometry args={[4.4, 3.4]} />
             <meshBasicMaterial color="#00ffff" transparent opacity={0.1} />
           </mesh>
 
-          {/* Contour lumineux */}
+          {/* CONTOUR LUMINEUX */}
           <lineSegments position={[0, 0, 0.02]}>
             <edgesGeometry args={[new THREE.PlaneGeometry(4, 3)]} />
             <lineBasicMaterial color="#00ffff" linewidth={2} />

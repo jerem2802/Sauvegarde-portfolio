@@ -24,7 +24,7 @@ export default function Player({
   const [hasEntered, setHasEntered] = useState(false);
   const [currentAction, setCurrentAction] = useState<string | null>(null);
 
-  const walkAnimName = animations[0]?.name ?? ""; // ← utilise automatiquement la première anim
+  const walkAnimName = animations[0]?.name ?? ""; 
 
 const hasInitialized = useRef(false);
 
@@ -34,7 +34,7 @@ useEffect(() => {
     group.current.scale.setScalar(SCALE);
     hasInitialized.current = true;
   }
-}, []);
+}, [startPosition]);
 
   // Keyboard listeners
   useEffect(() => {
@@ -68,7 +68,7 @@ useEffect(() => {
 
   useEffect(() => {
   const down = (e: KeyboardEvent) => {
-    // Empêche le scroll de la page pour certaines touches
+    
     if (["ArrowDown", "ArrowUp", "Space", "PageDown", "PageUp"].includes(e.key)) {
       e.preventDefault();
     }
@@ -90,7 +90,7 @@ useEffect(() => {
 }, []);
 
 
-  // Movement
+  // MOUVEMENTS
   const boundaries = {
     minX: -1.4,
     maxX: 1.4,

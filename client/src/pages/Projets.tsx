@@ -27,7 +27,7 @@ export default function Projets() {
   window.addEventListener("click", playAudio);
 
   return () => {
-    // Nettoyage à la sortie du composant
+    
     window.removeEventListener("click", playAudio);
     audio.pause();
     audio.currentTime = 0;

@@ -10,7 +10,7 @@ export default function LightStarSky() {
     const positions = new Float32Array(starCount * 3);
 
     for (let i = 0; i < positions.length; i++) {
-      positions[i] = (Math.random() - 0.5) * 35; // sphère large
+      positions[i] = (Math.random() - 0.5) * 35; 
     }
 
     const geo = new THREE.BufferGeometry();
@@ -20,7 +20,7 @@ export default function LightStarSky() {
 
   useFrame((_, delta) => {
     if (pointsRef.current) {
-      pointsRef.current.rotation.y += delta * 0.01; // rotation subtile
+      pointsRef.current.rotation.y += delta * 0.01; 
     }
   });
 

@@ -9,35 +9,38 @@ export default function AmbientSound({ url, initialVolume = 0.01 }: AmbientSound
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [volume, setVolume] = useState(initialVolume);
   const [muted, setMuted] = useState(false);
+  
 
-  // ✅ Ne recrée pas l'audio à chaque changement de volume
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
+ useEffect(() => {
+  if (audioRef.current) {
+    audioRef.current.pause();
+    audioRef.current.currentTime = 0;
+  }
 
-    const audio = new Audio(url);
-    audio.loop = true;
-    audio.volume = muted ? 0 : volume;
-    audioRef.current = audio;
+  const audio = new Audio(url);
+  audio.loop = true;
+  audio.volume = muted ? 0 : volume;
+  audioRef.current = audio;
 
-    const playAudio = () => {
-      audio
-        .play()
-        .catch((err) => console.warn("🔇 Lecture bloquée :", err));
-    };
+  const playAudio = () => {
+    audio
+      .play()
+      .catch((err) =>
+        console.warn("🔇 Lecture bloquée :", err)
+      );
+  };
 
-    window.addEventListener("click", playAudio);
+  window.addEventListener("click", playAudio);
 
-    return () => {
-      window.removeEventListener("click", playAudio);
-      audio.pause();
-      audio.currentTime = 0;
-    };
-  }, [url, muted]); // ✅ Retiré: `volume`
+  return () => {
+    window.removeEventListener("click", playAudio);
+    audio.pause();
+    audio.currentTime = 0;
+  };
+}, [url, muted]);
 
-  // ✅ Gère volume indépendamment
+
+  // GERER VOLUME ET MUTE
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = muted ? 0 : volume;
@@ -68,7 +71,7 @@ export default function AmbientSound({ url, initialVolume = 0.01 }: AmbientSound
     WebkitAppearance: "none",
     appearance: "none",
     height: "4px",
-    backgroundColor: "#FE6D59", // Couleur de la barre
+    backgroundColor: "#FE6D59", //SLIDER
     borderRadius: "10px",
     outline: "none",
   }}

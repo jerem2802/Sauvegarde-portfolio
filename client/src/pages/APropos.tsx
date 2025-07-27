@@ -14,37 +14,36 @@ export default function APropos() {
   const { progress } = useProgress();
 
   return (
-    <div className="w-full h-screen bg-black">
-      {/* ✅ Chargement en % */}
+    <div className="relative w-full h-screen bg-black">
+     
+      <div className="absolute top-4 left-4 text-white z-10">
+        <button
+          className="absolute top-4 left-4 px-4 py-2 text-cyan-400 border border-cyan-400 rounded-xl font-orbitron text-sm shadow-[0_0_10px_#00ffff88] backdrop-blur bg-black/30 hover:bg-cyan-500 hover:text-black transition"
+          onClick={() => navigate("/home")}
+        >
+          Retour
+        </button>
+      </div>
+
+      {/* ✅ LOADER */}
       {progress < 100 && <LoaderCharacter />}
 
       <Canvas camera={{ position: [0, 2, 0], fov: 60 }}>
         <ambientLight intensity={0.3} />
         <directionalLight position={[5, 5, 5]} intensity={0.5} />
         <pointLight position={[0, 3, 0]} intensity={2} distance={10} />
-       
 
         <Suspense fallback={null}>
           <group ref={groupRef}>
             <FloatingParticles count={2000} />
-           
           </group>
 
           <OrbitControls target={[0, 1.5, 0.1]} />
           <CircularInfoCarousel />
-          
         </Suspense>
       </Canvas>
 
-<AmbientSound url="/audio/ambient.mp3" initialVolume={0.02} />
-
-      <button
-        onClick={() => navigate("/home")}
-        className="absolute top-4 left-4 px-4 py-2 bg-blue-400 font-bold text-black rounded"
-      >
-        Retour
-      </button>
+      <AmbientSound url="/audio/ambient.mp3" initialVolume={0.02} />
     </div>
   );
 }
-
