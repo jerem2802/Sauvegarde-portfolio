@@ -34,7 +34,7 @@ useEffect(() => {
     group.current.scale.setScalar(SCALE);
     hasInitialized.current = true;
   }
-}, []);
+}, [startPosition]);
 
   // ECOUTE CLAVIER
   useEffect(() => {
@@ -108,7 +108,7 @@ useEffect(() => {
     if (keys["ArrowRight"]) group.current.rotation.y -= rotationSpeed;
     if (keys["ArrowUp"]) group.current.translateZ(speed);
     if (keys["ArrowDown"]) group.current.translateZ(-speed);
-    console.log("position", group.current.position.toArray());
+   
 
     const pos = group.current.position;
     if (
