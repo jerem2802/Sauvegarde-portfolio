@@ -38,13 +38,20 @@ export default function APropos() {
 
 <AmbientSound url="/audio/ambient.mp3" initialVolume={0.02} />
 
+       <div className="absolute top-4 left-4 text-white z-10">
+               
+  <div className="absolute top-4 left-4 text-white z-10">
       <button
+        className="absolute top-4 left-4 px-4 py-2 text-cyan-400 border border-cyan-400 rounded-xl font-orbitron text-sm shadow-[0_0_10px_#00ffff88] backdrop-blur bg-black/30 hover:bg-cyan-500 hover:text-black transition"
         onClick={() => navigate("/home")}
-        className="absolute top-4 left-4 px-4 py-2 bg-blue-400 font-bold text-black rounded"
       >
         Retour
       </button>
     </div>
+
+      </div>
+    </div>
+    
   );
 }
 

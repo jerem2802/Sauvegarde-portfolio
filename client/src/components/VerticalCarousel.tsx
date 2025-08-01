@@ -5,6 +5,7 @@ import { Text3D } from "@react-three/drei";
 import { useNavigate } from "react-router-dom";
 import { TextureLoader } from "three";
 
+
 // === CONFIGURATION DES CARTES ===
 const cardSettings: Record<
   string,
@@ -161,7 +162,7 @@ export default function VerticalProjectCarousel() {
                 {/* Description */}
                 <mesh position={[1.8, 0.2, 0]} rotation={[0, 0, 0]}>
                   <Text3D
-                    font="/fonts/Orbitron_Regular.json"
+                    font="/Fonts/Orbitron_Regular.json"
                     size={0.08}
                     height={0.0}
                     curveSegments={6}
@@ -180,7 +181,7 @@ export default function VerticalProjectCarousel() {
                 {project.url && (
                   <mesh position={[0, -0.7, 0]}>
                     <Text3D
-                      font="/fonts/Orbitron_Regular.json"
+                      font="/Fonts/Orbitron_Regular.json"
                       size={0.08}
                       height={0.01}
                       curveSegments={4}
