@@ -1,11 +1,11 @@
+import { OrbitControls, useProgress } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useRef } from "react";
-import * as THREE from "three";
 import { useNavigate } from "react-router-dom";
-import FloatingParticles from "../components/FloatingParticles";
+import * as THREE from "three";
 import AmbientSound from "../components/AmbientSound";
-import { OrbitControls, useProgress } from "@react-three/drei";
 import CircularInfoCarousel from "../components/CircularCarousel";
+import FloatingParticles from "../components/FloatingParticles";
 import LoaderCharacter from "../components/LoaderCharacter";
 
 export default function APropos() {
@@ -15,7 +15,7 @@ export default function APropos() {
 
   return (
     <div className="w-full h-screen bg-black">
-      {/* ✅ Chargement en % */}
+      {/* CHARGEMENT POURCENTAGE */}
       {progress < 100 && <LoaderCharacter />}
 
       <Canvas camera={{ position: [0, 2, 0], fov: 60 }}>

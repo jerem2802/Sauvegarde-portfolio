@@ -6,9 +6,9 @@ export default function KeyboardInstructions() {
       position={[16, 4.6, -11]}
       transform
       occlude
-      rotation={[-0.1, -0.001, 0]} // ✅ on force l’absence de rotation
+      rotation={[-0.1, -0.001, 0]} 
       center
-      zIndexRange={[10, 0]} // optionnel mais peut aider sur le z-index
+      zIndexRange={[10, 0]} 
     >
       <div
         style={{

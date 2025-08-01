@@ -1,6 +1,6 @@
 import { Text } from "@react-three/drei";
-import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { useRef } from "react";
 import * as THREE from "three";
 
 export default function ScrollingBetaBanner({ speed = 0.0006 }: { speed?: number }) {

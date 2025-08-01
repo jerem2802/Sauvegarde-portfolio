@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
-import * as THREE from "three";
 import { Text3D } from "@react-three/drei";
+import { useFrame, useLoader } from "@react-three/fiber";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as THREE from "three";
 import { TextureLoader } from "three";
 
 
-// === CONFIGURATION DES CARTES ===
+
 const cardSettings: Record<
   string,
   {
@@ -119,7 +119,7 @@ export default function VerticalProjectCarousel() {
 
         return (
           <group key={i}>
-            {/* Carte */}
+            {/* CARDS */}
             <mesh>
               <planeGeometry args={[3, 1]} />
               <meshBasicMaterial
@@ -129,7 +129,7 @@ export default function VerticalProjectCarousel() {
               />
             </mesh>
 
-            {/* Titre */}
+            {/* TITRE */}
             <Text3D
               key={project.title}
               position={titlePosition}
@@ -150,16 +150,16 @@ export default function VerticalProjectCarousel() {
               />
             </Text3D>
 
-            {/* Logo + Description + Indicateur */}
+            
             {isSelected && (
               <>
-                {/* Logo */}
+                {/* LOGO */}
                 <mesh position={[-2.5, 0, 0]} rotation={[0, 0.5, 0]}>
                   <planeGeometry args={[1, 1]} />
                   <meshBasicMaterial map={textures[i]} transparent />
                 </mesh>
 
-                {/* Description */}
+                {/* DESCRIPTION */}
                 <mesh position={[1.8, 0.2, 0]} rotation={[0, 0, 0]}>
                   <Text3D
                     font="/Fonts/Orbitron_Regular.json"
@@ -177,7 +177,7 @@ export default function VerticalProjectCarousel() {
                   </Text3D>
                 </mesh>
 
-                {/* Indicateur d’action si cliquable */}
+                {/* SI CLICABLE */}
                 {project.url && (
                   <mesh position={[0, -0.7, 0]}>
                     <Text3D

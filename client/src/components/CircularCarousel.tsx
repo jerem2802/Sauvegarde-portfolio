@@ -1,17 +1,16 @@
-import { Text, Html } from "@react-three/drei";
+import { Html, Text } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef, useState, ReactNode } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { FaCss3Alt, FaFigma, FaGithub, FaJs, FaLinkedin, FaNodeJs, FaReact } from "react-icons/fa";
+import { IoIosPhonePortrait } from "react-icons/io";
+import { RiTailwindCssLine } from "react-icons/ri";
+import { SiGit, SiMysql, SiThreedotjs, SiTypescript } from "react-icons/si";
+import { TiHtml5, TiMail } from "react-icons/ti";
 import * as THREE from "three";
 import NeonGlow from "./NeonGlow";
-import { FaLinkedin } from "react-icons/fa";
-import { IoIosPhonePortrait } from "react-icons/io";
-import { TiHtml5, TiMail } from "react-icons/ti";
-import { FaCss3Alt, FaJs, FaReact, FaNodeJs, FaFigma, FaGithub } from "react-icons/fa";
-import { SiGit, SiMysql, SiThreedotjs, SiTypescript } from "react-icons/si";
-import { RiTailwindCssLine } from "react-icons/ri";
 
 
-// Tableau des compétences avec icônes
+
 const skills: { name: string; icon: ReactNode }[] = [
   { name: "HTML", icon: <TiHtml5 size={4} color="#FF5722" /> },
   { name: "CSS", icon: <FaCss3Alt size={4} color="#2196F3" /> },
@@ -116,7 +115,7 @@ export default function CircularInfoCarousel() {
         "Mail:  jeremytichane.dev@gmail.com \nPhone: 07.68.18.67.49 \nLinkedin: www.linkedin.com/in/jérémy-tichané \nGitHub: jerem2802",
     },
     { title: "Photo", image: "/1000029319.jpg", isStatic: true },
-    { title: "Skills", content: "skills" }, // Carte spéciale Skills
+    { title: "Skills", content: "skills" }, 
   ];
 
   return (
@@ -189,7 +188,7 @@ function CardContent({
   const height = isSkillsCard ? 2.0 : 1.3;
   const spacing = 0.25;
 
-  // Si c'est une image
+ 
   if (card.image && photoTexture) {
     return (
       <mesh>
@@ -201,10 +200,10 @@ function CardContent({
 
   return (
     <group>
-      {/* Glow autour de la carte */}
+      {/* GLOW */}
       <NeonGlow width={width + 0.5} height={height + 0.4} color="#00ffff" />
 
-      {/* Fond de la carte */}
+     
       <mesh>
         <boxGeometry args={[width, height, 0.08]} />
         <meshPhysicalMaterial
@@ -219,13 +218,13 @@ function CardContent({
         />
       </mesh>
 
-      {/* Contour lumineux */}
+      {/* CONTOUR LUMINEUX */}
       <lineSegments>
         <edgesGeometry args={[new THREE.BoxGeometry(width, height, 0.09)]} />
         <lineBasicMaterial color="#00ffff" linewidth={2} />
       </lineSegments>
 
-      {/* Titre */}
+      {/* TITRE */}
       <Text
         fontSize={0.5}
         color="#00ffff"
@@ -238,9 +237,9 @@ function CardContent({
         {card.title}
       </Text>
 
-      {/* Contenu */}
+      {/* CONTENU */}
       {isSkillsCard ? (
-        // ----- Skills -----
+        // ----- SKILLS -----
         <group position={[-1, 0.5, 0.06]}>
           {Array.from({ length: 3 }).map((_, colIndex) => {
             const columnSkills = skills.slice(colIndex * 5, colIndex * 5 + 5);
@@ -266,7 +265,7 @@ function CardContent({
           })}
         </group>
       ) : isContactCard ? (
-        // ----- Contact -----
+        // ----- CONTACT -----
         <group position={[-0.5, 0.4, 0.06]}>
           {contactItems.map((item, i) => (
             <group key={i} position={[0, -i * spacing, 0]}>
@@ -285,7 +284,7 @@ function CardContent({
           ))}
         </group>
       ) : isCreditsCard ? (
-        // ----- Crédits -----
+        // ----- CREDITS -----
         <group position={[-0.4, 0.5, 0.06]}>
           {creditItems.map((item, i) => (
             <group key={i} position={[0, -i * spacing, 0]}>

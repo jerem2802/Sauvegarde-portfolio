@@ -38,13 +38,13 @@ export default function StylishBulbToggle({
 </Html>
 
 
-      {/* Socle métal */}
+      {/* SOCLE METAL */}
       <mesh position={[0, -0.35, 0]}>
         <cylinderGeometry args={[0.15, 0.15, 0.3, 32]} />
         <meshStandardMaterial color="gray" metalness={1} roughness={0.3} />
       </mesh>
 
-      {/* Bulbe verre */}
+      {/* BULBE EN VERRE */}
       <mesh ref={bulbRef}>
         <sphereGeometry args={[0.3, 32, 32]} />
         <meshPhysicalMaterial
@@ -59,7 +59,7 @@ export default function StylishBulbToggle({
         />
       </mesh>
 
-      {/* Filament */}
+      {/* FILAMENT*/}
       <mesh ref={filamentRef} position={[0, 0.05, 0]}>
         <torusGeometry args={[0.06, 0.01, 8, 16]} />
         <meshStandardMaterial

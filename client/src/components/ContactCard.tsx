@@ -1,5 +1,5 @@
 import { Html, Text } from "@react-three/drei";
-import { FaEnvelope, FaPhone, FaLinkedin, FaGithub } from "react-icons/fa";
+import { FaEnvelope, FaGithub, FaLinkedin, FaPhone } from "react-icons/fa";
 import { GrLocationPin } from "react-icons/gr";
 
 
@@ -9,7 +9,7 @@ const contactItems = [
     icon: <GrLocationPin size={9} color="#550B0B" />,
     text: "Bordeaux",
     href: "https://www.bordeaux-metropole.fr/",
-    offsetX: -0.82, // Ajustement horizontal
+    offsetX: -0.82, // AJUSTEMENT HORIZONTAL
   },
   {
     icon: <FaEnvelope size={8} color="#00ffff" />,
@@ -20,28 +20,28 @@ const contactItems = [
     icon: <FaPhone size={8} color="#00ffff" />,
     text: "07 68 18 67 49",
     href: "tel:0768186749",
-    offsetX: -0.63, // Ajustement horizontal
+    offsetX: -0.63, // AJUSTEMENT HORIZONTAL
   },
   {
     icon: <FaLinkedin size={8} color="#0a66c2" />,
     text: "linkedin",
     href: "https://linkedin.com/in/jérémy-tichané",
-     offsetX: -0.88, // Ajustement horizontal
+     offsetX: -0.88, // AJUSTEMENT HORIZONTAL
   },
   {
     icon: <FaGithub size={8} color="#00ffff" />,
     text: "Mon GitHub",
     href: "https://github.com/jerem2802",
-    offsetX: -0.72, // Ajustement horizontal
+    offsetX: -0.72, // AJUSTEMENT HORIZONTAL
   },
 ];
 
-const spacing = 0.5; // Espace entre les items
+const spacing = 0.5; // ESPACE ENTRE LES ÉLÉMENTS
 
 export default function ContactCard() {
   return (
     <group position={[0, 0.6, 0]}>
-      {/* Fond */}
+ 
       <mesh>
         <planeGeometry args={[4, 3]} />
         <meshStandardMaterial color="#111" transparent opacity={0.85} />
@@ -66,20 +66,19 @@ export default function ContactCard() {
 
 
 
-      {/* Infos de contact */}
+     
       {contactItems.map((item, index) => {
         const y = 0.5 - index * spacing;
         const textOffsetX = 0.2 + (item.offsetX || 0);
         return (
           <group key={index} position={[0, y, 0.01]}>
-            {/* Icône */}
+           
             <Html position={[-1.5, 0, 0]} transform>
               <div style={{ display: "flex", alignItems: "center" }}>
                 {item.icon}
               </div>
             </Html>
 
-            {/* Lien cliquable */}
             <Html position={[textOffsetX, 0.1, 0]} transform>
               <a
                 href={item.href}
@@ -100,7 +99,6 @@ export default function ContactCard() {
         );
       })}
 
-      {/* Bouton de téléchargement */}
       <group position={[0, -2.8, 0]} scale={0.5}>
         <Html center transform>
           <div

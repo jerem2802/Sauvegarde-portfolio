@@ -1,6 +1,6 @@
 import { useGLTF } from "@react-three/drei";
-import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { useRef } from "react";
 import * as THREE from "three";
 
 type ISSModelProps = {

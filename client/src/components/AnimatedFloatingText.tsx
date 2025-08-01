@@ -1,6 +1,6 @@
 import { Text3D, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 type FlickerState = {
@@ -16,7 +16,7 @@ export default function AnimatedFloatingText() {
 
   const flickerStates = useRef<Map<THREE.Mesh, FlickerState>>(new Map());
 
-  // Texture métal pour "Bienvenue"
+  // TEXTURE BIENVENUE"
   const [baseColor, normalMap, roughnessMap, metalMap, aoMap] = useTexture([
     "/models/textures/metal/Metal_007_basecolor.png",
     "/models/textures/metal/Metal_007_normal.png",
@@ -25,7 +25,6 @@ export default function AnimatedFloatingText() {
     "/models/textures/metal/Metal_007_ambientOcclusion.png",
   ]);
 
-  // Activer uv2 pour AO
   useEffect(() => {
     if (refBienvenue.current?.geometry) {
       refBienvenue.current.geometry.setAttribute(
@@ -40,13 +39,13 @@ export default function AnimatedFloatingText() {
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
 
-    // Animation "Bienvenue"
+    // ANIMATION BIENVENUE
     if (refBienvenue.current) {
       refBienvenue.current.position.y = baseY + Math.sin(t * 1.5) * 0.015;
       refBienvenue.current.rotation.z = Math.sin(t * 1.2) * 0.05;
     }
 
-    // Flickering sur les autres
+    
     [ref1, ref2, ref3].forEach((ref) => {
       const mesh = ref.current as THREE.Mesh;
       if (!mesh || !(mesh.material instanceof THREE.MeshStandardMaterial)) return;
@@ -70,7 +69,7 @@ export default function AnimatedFloatingText() {
 
   return (
     <>
-      {/* Projets */}
+      {/* PROJETS */}
       <Text3D
         ref={ref1}
         position={[-0.28, 1.1, 0.29]}
@@ -92,7 +91,7 @@ export default function AnimatedFloatingText() {
         />
       </Text3D>
 
-      {/* Contact */}
+      {/* CONTACT */}
       <Text3D
         ref={ref2}
         position={[-0.75, 1.3, 0.17]}
@@ -114,7 +113,7 @@ export default function AnimatedFloatingText() {
         />
       </Text3D>
 
-      {/* A Propos */}
+      {/* A PROPOS */}
       <Text3D
         ref={ref3}
         position={[-1.04, 1.05, 0.1]}
@@ -136,7 +135,7 @@ export default function AnimatedFloatingText() {
         />
       </Text3D>
 
-      {/* Bienvenue avec métal PBR */}
+      {/* BIENVENUE */}
       <Text3D
         ref={refBienvenue}
         position={[1.5, baseY, 0.2]}

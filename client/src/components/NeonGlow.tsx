@@ -1,6 +1,6 @@
 import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
 import { useRef } from "react";
+import * as THREE from "three";
 import { GlowShader } from "./GlowShader";
 
 export default function NeonGlow({ width = 2.6, height = 1.7, color = "#00ffff" }) {

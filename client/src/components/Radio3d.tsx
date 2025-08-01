@@ -1,22 +1,22 @@
-import { Canvas } from "@react-three/fiber";
 import {
   OrbitControls as DreiOrbitControls,
+  Sky,
   useGLTF,
   useProgress,
-  Sky,
 } from "@react-three/drei";
-import { Suspense, useState, useRef, useEffect } from "react";
-import AmbientSound from "./AmbientSound";
-import Player from "./Player";
-import AnimatedFloatingText from "./AnimatedFloatingText";
+import { Canvas } from "@react-three/fiber";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as THREE from "three";
-import ScrollingBetaBanner from "./ScrollingBetaBanner";
 import { OrbitControls } from "three-stdlib";
-import LoaderCharacter from "./LoaderCharacter";
-import StylishBulbToggle from "./StylishBulbToggle";
+import AmbientSound from "./AmbientSound";
+import AnimatedFloatingText from "./AnimatedFloatingText";
 import LampPost from "./LampPost";
 import LightStarSky from "./LightStarSky";
+import LoaderCharacter from "./LoaderCharacter";
+import Player from "./Player";
+import ScrollingBetaBanner from "./ScrollingBetaBanner";
+import StylishBulbToggle from "./StylishBulbToggle";
 
 const RadioModel = () => {
   const { scene } = useGLTF("/city.glb");
@@ -170,7 +170,7 @@ export default function Radio3D() {
           </group>
         </Suspense>
 
-        {/* Portes masquées */}
+        {/* PORTES MASQUÉES */}
         <mesh position={[0.03, 0.2, 0.27]}>
           <planeGeometry args={[0.11, 0.26]} />
           <meshStandardMaterial color="black" />
@@ -180,7 +180,7 @@ export default function Radio3D() {
           </mesh>
         </mesh>
 
-        {/* Lampadaires */}
+        {/* LAMPADAIRES */}
         <LampPost position={[-1.13, -1.63, 1.15]} isDarkMode={isDarkMode} />
         <LampPost position={[-1.14, -1.63, 0.61]} isDarkMode={isDarkMode} />
         <LampPost position={[0.68, -1.63, 0.61]} isDarkMode={isDarkMode} />

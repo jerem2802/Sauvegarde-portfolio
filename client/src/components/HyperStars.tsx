@@ -1,5 +1,5 @@
-import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
 import * as THREE from "three";
 
 export default function HyperStars() {
@@ -12,7 +12,7 @@ export default function HyperStars() {
 
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * 4 * Math.PI;
-      const radius = Math.random() * 50 + 50; // rayon entre 50 et 100
+      const radius = Math.random() * 50 + 50; 
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
       const z = Math.random() * -200;
@@ -21,7 +21,7 @@ export default function HyperStars() {
       positions[i * 3 + 1] = y;
       positions[i * 3 + 2] = z;
 
-      speeds[i] = 5 + Math.random() * 0.2; // vitesse variable
+      speeds[i] = 5 + Math.random() * 0.2; // VITESSE VARIABLE ENTRE 5 ET 5.2
     }
 
     return { positions, speeds };
@@ -40,11 +40,11 @@ export default function HyperStars() {
 
     if (positions[zIndex] > 5) {
       const angle = Math.random() * 2 * Math.PI;
-      const radius = Math.random() * 50 + 50; // rayon entre 50 et 100
+      const radius = Math.random() * 50 + 50; 
 
       positions[xIndex] = Math.cos(angle) * radius;
       positions[yIndex] = Math.sin(angle) * radius;
-      positions[zIndex] = -200 + Math.random() * 400; // réinitialiser la position Z
+      positions[zIndex] = -200 + Math.random() * 400; 
     }
   }
 

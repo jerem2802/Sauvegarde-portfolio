@@ -1,6 +1,6 @@
-import { useRef, useEffect, useState } from "react";
+import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useGLTF, useAnimations } from "@react-three/drei";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 type PlayerProps = {
@@ -24,7 +24,7 @@ export default function Player({
   const [hasEntered, setHasEntered] = useState(false);
   const [currentAction, setCurrentAction] = useState<string | null>(null);
 
-  const walkAnimName = animations[0]?.name ?? ""; // ← utilise automatiquement la première anim
+  const walkAnimName = animations[0]?.name ?? ""; 
 
 const hasInitialized = useRef(false);
 
@@ -36,7 +36,7 @@ useEffect(() => {
   }
 }, []);
 
-  // Keyboard listeners
+  // ECOUTE CLAVIER
   useEffect(() => {
     const down = (e: KeyboardEvent) => setKeys((k) => ({ ...k, [e.key]: true }));
     const up = (e: KeyboardEvent) => setKeys((k) => ({ ...k, [e.key]: false }));
@@ -48,7 +48,7 @@ useEffect(() => {
     };
   }, []);
 
-  // Handle animation
+  // ANIMATION PERSONNAGE
   useEffect(() => {
     if (!actions || !walkAnimName || !actions[walkAnimName]) return;
     const shouldWalk = keys["ArrowUp"] || keys["ArrowDown"] || keys["ArrowLeft"] || keys["ArrowRight"];
@@ -68,7 +68,7 @@ useEffect(() => {
 
   useEffect(() => {
   const down = (e: KeyboardEvent) => {
-    // Empêche le scroll de la page pour certaines touches
+  
     if (["ArrowDown", "ArrowUp", "Space", "PageDown", "PageUp"].includes(e.key)) {
       e.preventDefault();
     }
@@ -90,7 +90,7 @@ useEffect(() => {
 }, []);
 
 
-  // Movement
+  // MUVEMENTS ET LIMITES
   const boundaries = {
     minX: -1.4,
     maxX: 1.4,

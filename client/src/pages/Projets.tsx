@@ -1,12 +1,11 @@
-import { Canvas } from "@react-three/fiber";
-import { Suspense, useRef } from "react";
 import { OrbitControls, Stars } from "@react-three/drei";
-import * as THREE from "three";
+import { Canvas } from "@react-three/fiber";
+import { Suspense, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import * as THREE from "three";
 import ISSModel from "../components/IssModel";
-import VerticalProjectCarousel from "../components/VerticalCarousel";
-import { useEffect } from "react";
 import KeyboardInstructions from "../components/KeyboardInstructions";
+import VerticalProjectCarousel from "../components/VerticalCarousel";
 
 
 export default function Projets() {
@@ -27,7 +26,7 @@ export default function Projets() {
   window.addEventListener("click", playAudio);
 
   return () => {
-    // Nettoyage à la sortie du composant
+    // NETTOYAGE AUDIO
     window.removeEventListener("click", playAudio);
     audio.pause();
     audio.currentTime = 0;

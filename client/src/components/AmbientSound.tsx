@@ -10,7 +10,7 @@ export default function AmbientSound({ url, initialVolume = 0.01 }: AmbientSound
   const [volume, setVolume] = useState(initialVolume);
   const [muted, setMuted] = useState(false);
 
-  // ✅ Ne recrée pas l'audio à chaque changement de volume
+ 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -35,9 +35,9 @@ export default function AmbientSound({ url, initialVolume = 0.01 }: AmbientSound
       audio.pause();
       audio.currentTime = 0;
     };
-  }, [url, muted]); // ✅ Retiré: `volume`
+  }, [url, muted]); 
 
-  // ✅ Gère volume indépendamment
+  
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = muted ? 0 : volume;
@@ -68,7 +68,7 @@ export default function AmbientSound({ url, initialVolume = 0.01 }: AmbientSound
     WebkitAppearance: "none",
     appearance: "none",
     height: "4px",
-    backgroundColor: "#FE6D59", // Couleur de la barre
+    backgroundColor: "#FE6D59", 
     borderRadius: "10px",
     outline: "none",
   }}
