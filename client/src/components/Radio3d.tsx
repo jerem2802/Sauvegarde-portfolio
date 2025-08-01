@@ -18,24 +18,21 @@ import Player from "./Player";
 import ScrollingBetaBanner from "./ScrollingBetaBanner";
 import StylishBulbToggle from "./StylishBulbToggle";
 
-const RadioModel = () => {
+const RadioModel = (): JSX.Element => {
   const { scene } = useGLTF("/city.glb");
 
   useEffect(() => {
     scene.traverse((obj) => {
       if (obj instanceof THREE.Mesh) {
-        console.log(
-          `🧱 Mesh "${obj.name}" → position:`,
-          obj.position,
-          " world position:",
-          obj.getWorldPosition(new THREE.Vector3())
-        );
+      
+        obj.material.transparent = true;
       }
     });
   }, [scene]);
 
   return <primitive object={scene} scale={0.8} />;
 };
+
 
 const InteriorRoom = () => (
   <group>
