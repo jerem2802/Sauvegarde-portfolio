@@ -132,7 +132,7 @@ export default function VerticalProjectCarousel() {
             <Text3D
               key={project.title}
               position={titlePosition}
-              font="/fonts/Orbitron_Regular.json"
+              font="/Fonts/Orbitron_Regular.json"
               size={titleSize}
               height={0.04}
               curveSegments={12}

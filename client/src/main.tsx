@@ -12,6 +12,7 @@ import Projets from "./pages/Projets";
 import Contact from "./pages/Contact";
 
 
+
 const router = createBrowserRouter([
 	{
 		path: "/",
